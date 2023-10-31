@@ -32,12 +32,12 @@ export default function Signup() {
 
   return (
     <div className="container mx-auto">
-      <h2 className="mt-28 text-center text-4xl font-bold leading-9 tracking-tight text-gray-900">
+      <h2 className="mt-28 text-center text-4xl font-bold leading-9 tracking-tight text-neutral">
         Register account
       </h2>
       <div className="form-control mt-10 mx-auto max-w-xs sm:w-full sm:max-w-sm">
         <form onSubmit={handleSubmit}>
-          <p className="font-medium">Account details</p>
+          <p className="font-medium text-neutral">Account details</p>
           <div className="relative flex items-center text-gray-500 mt-2">
             <NameIcon />
             <input

@@ -15,13 +15,13 @@ export default function Login() {
 
   return (
     <div className="container mx-auto">
-      <h2 className="mt-28 text-center text-4xl font-bold leading-9 tracking-tight text-gray-900">
+      <h2 className="mt-28 text-center text-4xl font-bold leading-9 tracking-tight text-neutral">
         Sign in
       </h2>
 
       <div className="form-control mt-10 mx-auto sm:w-full sm:max-w-sm">
         <form onSubmit={handleSubmit}>
-          <p className="font-medium">Login details</p>
+          <p className="font-medium text-neutral">Login details</p>
           <div className="flex items-center text-gray-500 mt-4">
             <EmailIcon />
             <input
