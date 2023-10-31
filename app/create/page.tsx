@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useQuill } from "react-quilljs";
 import "quill/dist/quill.snow.css";
 import { QuillContent } from "@/interfaces";
@@ -9,6 +9,7 @@ export default function CreateDocument() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [docTitle, setDocTitle] = useState("");
+  const [isDocPrivate, setIsDocPrivate] = useState(false)
   const [quillContent, setQuillContent] = useState<QuillContent>({
     quillText: "",
     quillInnerHTML: "",
@@ -70,7 +71,6 @@ export default function CreateDocument() {
       setDocTitle(event.target.value);
     }
   };
-
   const viewDocumentAfterCreate = () => {
     router.push("/documents");
   };
@@ -101,6 +101,7 @@ export default function CreateDocument() {
         author: "Niclas Nätfiske",
         dateCreated: getFormattedDate(),
         textStyling: quillContent.quillInnerHTML,
+        isPrivate: isDocPrivate
       }),
     });
 
@@ -130,17 +131,27 @@ export default function CreateDocument() {
             onChange={handleChange}
           />
           <div className="flex-grow" ref={quillRef} />
-          <button
-            type="submit"
-            className={`btn btn-secondary self-end mt-3 ${
-              isLoading ? "opacity-70 cursor-not-allowed" : ""
-            }`}
-          >
-            {isLoading ? "Adding" : "Add document"}
-            {isLoading && (
-              <span className="loading loading-dots loading-sm"></span>
-            )}
-          </button>
+          <div className="self-end mt-3 flex gap-4">
+            <div className=" self-center form-control">
+              <label className="cursor-pointer label">
+                <span className="label-text mr-4">Pivate document</span>
+                <input
+                  onChange={() => setIsDocPrivate(!isDocPrivate)} type="checkbox"
+                  checked={isDocPrivate} className="checkbox checkbox-info"
+                />
+              </label>
+            </div>
+            <button
+              type="submit"
+              className={`btn btn-secondary ${isLoading ? "opacity-70 cursor-not-allowed" : ""
+                }`}
+            >
+              {isLoading ? "Adding" : "Add document"}
+              {isLoading && (
+                <span className="loading loading-dots loading-sm"></span>
+              )}
+            </button>
+          </div>
         </form>
       </div>
     </div>
