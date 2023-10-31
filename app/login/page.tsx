@@ -1,4 +1,5 @@
 "use client";
+import { EmailIcon, PasswordIcon } from "@/components/icons/inputIcons";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -22,20 +23,7 @@ export default function Login() {
         <form onSubmit={handleSubmit}>
           <p className="font-medium">Login details</p>
           <div className="flex items-center text-gray-500 mt-4">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-5 h-5 ml-3 absolute pointer-events-none"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
-              />
-            </svg>
+            <EmailIcon />
             <input
               id="email"
               type="text"
@@ -51,20 +39,7 @@ export default function Login() {
             />
           </div>
           <div className="mt-2 relative flex items-center text-gray-500">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-5 h-5 ml-3 absolute pointer-events-none"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
-              />
-            </svg>
+            <PasswordIcon />
             <input
               id="password"
               type="password"
@@ -77,6 +52,7 @@ export default function Login() {
               required
             />
           </div>
+          {/* Preppat för fel inlogg när vi väl gör fetch */}
           {incorrectDetails && (
             <label className="label">
               <span className="label-text-alt text-red-700 font-semibold">
