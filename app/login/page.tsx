@@ -1,16 +1,28 @@
 "use client";
-import { signIn } from "next-auth/react";
-import { useState } from "react";
+import { useSession, signIn, signOut } from "next-auth/react";
+import Image from "next/image";
 
-export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [incorrectDetails, setIncorrectDetails] = useState(false);
+const Login = () => {
+  const { data: session } = useSession();
 
-  const handleSubmit = () => {
-    // User login fetch
-    // KOD123
-  };
+  if (session) {
+    return (
+      <div className="container mx-auto">
+        <h2 className="mt-28 text-center text-4xl font-bold leading-9 tracking-tight text-neutral">
+          Signed in as {session.user?.name}
+        </h2>
+
+        <div className="form-control mx-auto sm:w-full sm:max-w-sm">
+          <button
+            onClick={() => signOut()}
+            className="btn btn-active btn-secondary mt-10 w-full"
+          >
+            Sign out
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto">
@@ -18,11 +30,16 @@ export default function Login() {
         Sign in
       </h2>
 
-      <div className="form-control mt-10 mx-auto sm:w-full sm:max-w-sm">
-        <button onClick={() => signIn("google", { callbackUrl: "/documents" })} className="btn btn-active btn-secondary mt-10 w-full">
+      <div className="form-control mx-auto sm:w-full sm:max-w-sm">
+        <button
+          onClick={() => signIn("google", { callbackUrl: "/documents" })}
+          className="btn btn-active btn-secondary mt-10 w-full"
+        >
           Sign in with Google
         </button>
       </div>
     </div>
   );
-}
+};
+
+export default Login;
