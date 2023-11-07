@@ -11,3 +11,9 @@ export interface QuillContent {
   quillText: string;
   quillInnerHTML: string;
 }
+
+export interface User {
+  name: string;
+  email: string;
+  password: string;
+}
