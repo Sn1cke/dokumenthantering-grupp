@@ -1,12 +1,14 @@
-"use client"
+"use client";
 import Link from "next/link";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
-import Sidebar from "./Sidebar"; 
+import { useSession } from "next-auth/react";
+import Sidebar from "./Sidebar";
 
 export default function Header() {
   const [sidebarVisible, setSidebarVisible] = useState(false);
+  const { data: session } = useSession();
 
   const toggleSidebar = () => {
     setSidebarVisible(!sidebarVisible);
@@ -32,24 +34,29 @@ export default function Header() {
             </button>
           </div>
           <div className="hidden md:flex gap-10">
-            <Link href="/documents">
-              <div className="text-neutral-content font-semibold">Documents</div>
-            </Link>
-            <Link href="/create">
-              <div className="text-neutral-content font-semibold">Create new</div>
-            </Link>
-            <Link href="/login">
-              <div className="text-neutral-content font-semibold">Login</div>
-            </Link>
+            {session ? (
+              <Link href="/documents">
+                <div className="text-neutral-content font-semibold">Documents</div>
+              </Link>
+            ) : null}
+            {session ? (
+              <Link href="/create">
+                <div className="text-neutral-content font-semibold">Create new</div>
+              </Link>
+            ) : null}
+            {session ? (
+              <Link href="/login">
+                <div className="text-neutral-content font-semibold">Sign out</div>
+              </Link>
+            ) : (
+              <Link href="/login">
+                <div className="text-neutral-content font-semibold">Login</div>
+              </Link>
+            )}
           </div>
         </div>
       </div>
-      <Sidebar
-        sidebarVisible={sidebarVisible}
-        closeSidebar={closeSidebar}
-      />
+      <Sidebar sidebarVisible={sidebarVisible} closeSidebar={closeSidebar} />
     </header>
   );
 }
-
-

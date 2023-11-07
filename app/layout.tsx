@@ -5,6 +5,8 @@ import "./globals.css";
 //Components
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import AuthProvider from "@/components/authprovider/Authprovider";
+import UserValidation from "@/components/UserValidation";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,9 +23,14 @@ export default function RootLayout({
   return (
     <html lang="en" data-theme="fantasy">
       <body className={inter.className}>
-        <Header />
-        <main>{children}</main>
-        <Footer />
+        <AuthProvider>
+          <Header />
+          <UserValidation>
+            <main>{children}</main>
+          </UserValidation>
+
+          <Footer />
+        </AuthProvider>
       </body>
     </html>
   );
