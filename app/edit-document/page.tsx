@@ -102,7 +102,7 @@ export default function CreateDocument() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    setIsLoading(is => !is);
 
     const response = await fetch(`documents/${documentID}`, {
       method: "PATCH",
@@ -117,7 +117,7 @@ export default function CreateDocument() {
     });
 
     setTimeout(() => {
-      setIsLoading(false);
+      setIsLoading(is => !is);
       viewDocument();
     }, 1500);
   };
