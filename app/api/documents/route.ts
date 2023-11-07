@@ -15,12 +15,13 @@ export async function POST(req: Request, res: Response) {
       await req.json();
 
     const result = await dbQuery({
-      sql: "INSERT INTO documents (title, content, author, dateCreated, textStyling) VALUES (?, ?, ?, ?, ?)",
-      values: [title, content, author, dateCreated, textStyling]
+      sql: "INSERT INTO documents (document_title, document_content, document_created, document_author_id, document_category_id, document_HTML, document_private, document_deleted) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+      values: [title, content, dateCreated, 1, 1, textStyling, isPrivate, false]
     });
-
+    console.log(result);
     return NextResponse.json(result);
   } catch (error) {
+    console.error("Här blev det fel", error);
     return NextResponse.error();
   }
 }
