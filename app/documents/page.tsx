@@ -37,7 +37,16 @@ export default function DocumentsPage() {
           userName: session?.user?.name,
         }),
       });
-      const newUser = await result.json();
+      if (result.ok) {
+        const newUser = await result.json();
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            email: newUser[0].user_email,
+            userName: newUser[0].user_name,
+          })
+        );
+      }
     };
     createNewUser();
   }, []);

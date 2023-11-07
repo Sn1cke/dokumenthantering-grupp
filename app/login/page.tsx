@@ -5,6 +5,11 @@ const Login = () => {
   const { data: session } = useSession();
   console.log(session);
 
+  const handleSignOut = () => {
+    localStorage.removeItem("user");
+    signOut();
+  };
+
   if (session) {
     return (
       <div className="container mx-auto">
@@ -14,7 +19,7 @@ const Login = () => {
 
         <div className="form-control mx-auto sm:w-full sm:max-w-sm">
           <button
-            onClick={() => signOut()}
+            onClick={handleSignOut}
             className="btn btn-active btn-secondary mt-10 w-full"
           >
             Sign out
