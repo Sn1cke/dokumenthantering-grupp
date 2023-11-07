@@ -1,9 +1,9 @@
 "use client";
 import { useSession, signIn, signOut } from "next-auth/react";
-import Image from "next/image";
 
 const Login = () => {
   const { data: session } = useSession();
+  console.log(session);
 
   if (session) {
     return (
@@ -29,7 +29,6 @@ const Login = () => {
       <h2 className="mt-28 text-center text-4xl font-bold leading-9 tracking-tight text-neutral">
         Sign in
       </h2>
-
       <div className="form-control mx-auto sm:w-full sm:max-w-sm">
         <button
           onClick={() => signIn("google", { callbackUrl: "/documents" })}
