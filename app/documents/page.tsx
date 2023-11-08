@@ -42,6 +42,7 @@ export default function DocumentsPage() {
         localStorage.setItem(
           "user",
           JSON.stringify({
+            id: newUser[0].user_id,
             email: newUser[0].user_email,
             userName: newUser[0].user_name,
           })
