@@ -5,8 +5,10 @@ import { HiDocumentText } from "react-icons/hi";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
+import { useSession } from "next-auth/react";
 
 export default function DocumentsPage() {
+  const { data: session } = useSession();
   const [documents, setDocuments] = useState([]);
   const router = useRouter();
 
@@ -21,6 +23,33 @@ export default function DocumentsPage() {
       setDocuments(documentsFromAPI.reverse());
     };
     getDocumentsData();
+  }, []);
+
+  useEffect(() => {
+    const createNewUser = async () => {
+      const result = await fetch("api/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: session?.user?.email,
+          userName: session?.user?.name,
+        }),
+      });
+      if (result.ok) {
+        const newUser = await result.json();
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            id: newUser[0].user_id,
+            email: newUser[0].user_email,
+            userName: newUser[0].user_name,
+          })
+        );
+      }
+    };
+    createNewUser();
   }, []);
 
   const documentsData = documents.map((document: Document) => {
