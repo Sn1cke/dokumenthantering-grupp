@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { useSession } from "next-auth/react";
+import Star from "@/components/Star";
+import { id } from "date-fns/locale";
 
 export default function DocumentsPage() {
   const { data: session } = useSession();
@@ -13,7 +15,7 @@ export default function DocumentsPage() {
   const router = useRouter();
 
   const viewDocument = (document: Document) => {
-    router.push("/view-document/?id=" + document.id);
+    router.push("/view-document/?id=" + document.document_id);
   };
 
   useEffect(() => {
@@ -54,27 +56,45 @@ export default function DocumentsPage() {
 
   const documentsData = documents.map((document: Document) => {
     const truncatedContent =
-      document.content.length > 25
-        ? `${document.content.substring(0, 35)}...`
-        : document.content;
+      document.document_content.length > 25
+        ? `${document.document_content.substring(0, 35)}...`
+        : document.document_content;
 
-    const formattedDate = format(new Date(document.dateCreated), "yyyy-MM-dd");
+    const formattedDate = format(new Date(document.document_created), "yyyy-MM-dd");
+
+    function addStar(documentId: number, userId: number): void {
+      throw new Error("Function not implemented.");
+    }
+
+    function removeStar(documentId: number, userId: number): void {
+      throw new Error("Function not implemented.");
+    }
 
     return (
+      <>
       <tr
-        onClick={() => viewDocument(document)}
-        key={`document-${document.id}`}
-        className="hover"
+        // onClick={() => viewDocument(document)}
+        // key={`document-${document.document_id}`}
+        // className="hover"
       >
-        <td className="flex gap-2 items-center font-semibold hover:cursor-pointer">
+        <td 
+
+          onClick={() => viewDocument(document)}
+          key={`document-${document.document_id}`}
+        
+          className="flex gap-2 items-center font-semibold hover:cursor-pointer">
           <HiDocumentText className="h-8 w-8 text-secondary" />
-          {document.title}
+          {document.document_title}
         </td>
 
         <td className="hidden md:table-cell">{truncatedContent}</td>
-        <td className="hidden sm:table-cell font-medium">{document.author}</td>
+        <td className="hidden sm:table-cell font-medium">{document.document_author_id}</td>
         <td>{formattedDate}</td>
+        <td>
+        <Star documentId={document.document_id} userId={id} addStar={addStar} removeStar={removeStar}/>
+        </td>
       </tr>
+      </>
     );
   });
 
@@ -91,6 +111,7 @@ export default function DocumentsPage() {
                   <th className="hidden md:table-cell">Preview</th>
                   <th className="hidden sm:table-cell">Author</th>
                   <th>Date created</th>
+                  <th>Favorite</th>
                 </tr>
               </thead>
               <tbody>{documentsData}</tbody>

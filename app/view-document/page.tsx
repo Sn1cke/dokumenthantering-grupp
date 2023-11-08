@@ -46,7 +46,7 @@ export default function CreateDocument() {
         <h3 className="font-bold text-xl">Deleting document</h3>
         <p className="py-4">
           Are you sure you wish to delete{" "}
-          <span className="font-semibold">{documentData?.title}</span>?
+          <span className="font-semibold">{documentData?.document_title}</span>?
         </p>
         <div className="text-center">
           <form method="dialog">
@@ -67,7 +67,7 @@ export default function CreateDocument() {
       {documentData ? (
         <div className="max-w-screen-lg mx-auto">
           <h2 className="text-2xl font-bold text-primary mb-2">
-            {documentData?.title}
+            {documentData?.document_title}
           </h2>
           <div
             className="flex flex-col"
