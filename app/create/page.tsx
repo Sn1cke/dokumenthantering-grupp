@@ -2,7 +2,7 @@
 import { use, useEffect, useState } from "react";
 import { useQuill } from "react-quilljs";
 import "quill/dist/quill.snow.css";
-import { QuillContent } from "@/interfaces";
+import { QuillContent, User } from "@/interfaces";
 import { useRouter } from "next/navigation";
 
 export default function CreateDocument() {
@@ -10,6 +10,7 @@ export default function CreateDocument() {
   const [isLoading, setIsLoading] = useState(false);
   const [docTitle, setDocTitle] = useState("");
   const [isDocPrivate, setIsDocPrivate] = useState(false)
+  const [category, setCategory] = useState<string | null>(null)
   const [quillContent, setQuillContent] = useState<QuillContent>({
     quillText: "",
     quillInnerHTML: "",
@@ -66,15 +67,20 @@ export default function CreateDocument() {
     return `${year}-${month}-${day}`;
   }
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target) {
       setDocTitle(event.target.value);
     }
   };
+  const handleCategoryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCategory(event.target.value)
+  }
   const viewDocumentAfterCreate = () => {
     router.push("/documents");
   };
-
+  useEffect(() => {
+    console.log(category)
+  }, [category])
   useEffect(() => {
     if (quill) {
       quill.on("text-change", () => {
@@ -85,12 +91,13 @@ export default function CreateDocument() {
       });
     }
   }, [quill]);
-
   const handleSubmit = async (e: React.FormEvent) => {
+    const storageUser = localStorage.getItem("user")
+    const user: User = JSON.parse(storageUser as string)
+
     e.preventDefault();
     setIsLoading(true);
-
-    const response = await fetch("/api/documents", {
+    await fetch("/api/documents", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -98,10 +105,11 @@ export default function CreateDocument() {
       body: JSON.stringify({
         title: docTitle,
         content: quillContent.quillText,
-        author: "Niclas Nätfiske",
+        author: user.id,
         dateCreated: getFormattedDate(),
         textStyling: quillContent.quillInnerHTML,
-        isPrivate: isDocPrivate
+        isPrivate: isDocPrivate,
+        category: category
       }),
     });
 
@@ -128,10 +136,42 @@ export default function CreateDocument() {
             className="text pl-4 py-2 border border-[#ccc] w-full"
             placeholder="Title"
             value={docTitle}
-            onChange={handleChange}
+            onChange={handleTitleChange}
           />
           <div className="flex-grow" ref={quillRef} />
           <div className="self-end mt-3 flex gap-4">
+            <div className="btn-group btn-group-vertical">
+              <input
+                type="radio"
+                name="options"
+                data-title="Human Resources"
+                className="btn"
+                value="1"
+                onChange={handleCategoryChange} />
+              <input
+                type="radio"
+                name="options"
+                data-title="Financial Documents"
+                className="btn"
+                value="2"
+                onChange={handleCategoryChange} />
+              <input
+                type="radio"
+                name="options"
+                data-title="Project Management"
+                className="btn"
+                value="3"
+                onChange={handleCategoryChange}
+              />
+              <input
+                type="radio"
+                name="options"
+                data-title="Sales and Marketing"
+                className="btn"
+                value="4"
+                onChange={handleCategoryChange}
+              />
+            </div>
             <div className=" self-center form-control">
               <label className="cursor-pointer label">
                 <span className="label-text mr-4">Pivate document</span>
