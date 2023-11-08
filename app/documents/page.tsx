@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { useSession } from "next-auth/react";
+import { getUser } from "@/utils/utils";
 
 export default function DocumentsPage() {
   const { data: session } = useSession();
@@ -18,7 +19,8 @@ export default function DocumentsPage() {
 
   useEffect(() => {
     const getDocumentsData = async () => {
-      const result = await fetch("/api/documents");
+      const user = getUser()
+      const result = await fetch("/api/users/" + user.id+ "/documents");
       const documentsFromAPI = await result.json();
       setDocuments(documentsFromAPI.reverse());
     };
@@ -54,16 +56,16 @@ export default function DocumentsPage() {
 
   const documentsData = documents.map((document: Document) => {
     const truncatedContent =
-      document.content.length > 25
-        ? `${document.content.substring(0, 35)}...`
-        : document.content;
+      document.document_content.length > 25
+        ? `${document.document_content.substring(0, 35)}...`
+        : document.document_content;
 
-    const formattedDate = format(new Date(document.dateCreated), "yyyy-MM-dd");
+    const formattedDate = format(new Date(document.document_created), "yyyy-MM-dd");
 
     return (
       <tr
         onClick={() => viewDocument(document)}
-        key={`document-${document.id}`}
+        key={`document-${document.document_id}`}
         className="hover"
       >
         <td className="flex gap-2 items-center font-semibold hover:cursor-pointer">
@@ -72,7 +74,7 @@ export default function DocumentsPage() {
         </td>
 
         <td className="hidden md:table-cell">{truncatedContent}</td>
-        <td className="hidden sm:table-cell font-medium">{document.author}</td>
+        <td className="hidden sm:table-cell font-medium">{document.document_author_id}</td>
         <td>{formattedDate}</td>
       </tr>
     );
