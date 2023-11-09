@@ -79,7 +79,6 @@ export default function CreateDocument() {
     router.push("/documents");
   };
   useEffect(() => {
-    console.log(category)
   }, [category])
   useEffect(() => {
     if (quill) {

@@ -6,7 +6,10 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { useSession } from "next-auth/react";
+import Star from "@/components/Star";
+import { id } from "date-fns/locale";
 import { getUser } from "@/utils/utils";
+
 
 export default function DocumentsPage() {
   const { data: session } = useSession();
@@ -14,7 +17,7 @@ export default function DocumentsPage() {
   const router = useRouter();
 
   const viewDocument = (document: Document) => {
-    router.push("/view-document/?id=" + document.id);
+    router.push("/view-document/?id=" + document.document_id);
   };
 
   useEffect(() => {
@@ -65,13 +68,31 @@ export default function DocumentsPage() {
       "yyyy-MM-dd"
     );
 
+    function addStar(documentId: number, userId: number): void {
+      throw new Error("Function not implemented.");
+    }
+
+    function removeStar(documentId: number, userId: number): void {
+      throw new Error("Function not implemented.");
+    }
+
+
     return (
+      <>
       <tr
-        onClick={() => viewDocument(document)}
-        key={`document-${document.document_id}`}
-        className="hover"
+
+        // onClick={() => viewDocument(document)}
+        // key={`document-${document.document_id}`}
+        // className="hover"
+
       >
-        <td className="flex gap-2 items-center font-semibold hover:cursor-pointer">
+        <td 
+
+          onClick={() => viewDocument(document)}
+          key={`document-${document.document_id}`}
+          
+        
+          className="flex gap-2 items-center font-semibold hover:cursor-pointer">
           <HiDocumentText className="h-8 w-8 text-secondary" />
           {document.document_title}
         </td>
@@ -81,7 +102,11 @@ export default function DocumentsPage() {
           {document.document_author}
         </td>
         <td>{formattedDate}</td>
+        <td>
+        <Star documentId={document.document_id} userId={id} addStar={addStar} removeStar={removeStar}/>
+        </td>
       </tr>
+      </>
     );
   });
 
@@ -98,6 +123,7 @@ export default function DocumentsPage() {
                   <th className="hidden md:table-cell">Preview</th>
                   <th className="hidden sm:table-cell">Author</th>
                   <th>Date created</th>
+                  <th>Favorite</th>
                 </tr>
               </thead>
               <tbody>{documentsData}</tbody>

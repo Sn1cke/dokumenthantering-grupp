@@ -27,3 +27,30 @@ export async function POST(req: Request, res: Response) {
     return NextResponse.error();
   }
 }
+
+
+export async function GET(req: Request, { params }: { params: { user_id: string } }) {
+  const { user_id } = params;
+
+  const result = await dbQuery({
+    sql: 'SELECT * FROM users WHERE user_id = ?',
+    values: [user_id],
+  });
+
+  return NextResponse.json(result, { status: 200 });
+}
+
+
+// export async function GET(
+//   req: Request,
+//   { params }: { params: { email: string } }
+// ) {
+//   const { email } = params;
+
+//   const result = await dbQuery({
+//     sql: 'SELECT * FROM users WHERE user_email = ?',
+//     values: [email],
+//   });
+
+//   return NextResponse.json(result, { status: 200 });
+// }
