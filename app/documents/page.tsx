@@ -73,7 +73,7 @@ export default function DocumentsPage() {
       >
         <td className="flex gap-2 items-center font-semibold hover:cursor-pointer">
           <HiDocumentText className="h-8 w-8 text-secondary" />
-          {document.title}
+          {document.document_title}
         </td>
 
         <td className="hidden md:table-cell">{truncatedContent}</td>
