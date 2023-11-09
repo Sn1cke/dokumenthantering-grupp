@@ -1,16 +1,14 @@
-import { ReactNode } from "react";
-
 export interface Document {
   document_id: number;
   document_title: string;
   document_content: string;
-  document_author_id: ReactNode;
-  document_author: ReactNode; //*
-  document_created: string | Date;
-  document_edited: string | Date;
+  document_author_id: number;
+  document_category_id: number;
+  document_created: string | number | Date;
+  document_edited: string;
   document_HTML: string;
-  document_private: boolean;
-  document_deleted: boolean;
+  document_private: string;
+  document_deleted: string;
 }
 
 export interface QuillContent {
@@ -19,7 +17,14 @@ export interface QuillContent {
 }
 
 export interface User {
-  id: string;
-  name: string;
-  email: string;
+  id: number;
+  user_id: number;
+  user_name: string;
+  user_email: string;
+}
+
+export interface Favourite {
+  favourite_id: number;
+  user_id: number;
+  document_id: number;
 }
