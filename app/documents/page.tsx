@@ -50,8 +50,7 @@ export default function DocumentsPage() {
       const documentsFromAPI = await result.json();
       setDocuments(documentsFromAPI.reverse());
     };
-    createNewUser();
-    getDocumentsData();
+    createNewUser().then(() => getDocumentsData());
   }, [session?.user]);
 
   const documentsData = documents.map((document: Document) => {
