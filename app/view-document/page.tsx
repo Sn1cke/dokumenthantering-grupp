@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Document } from "@/interfaces";
+import { getUser } from "@/utils/utils";
 
 export default function CreateDocument() {
   const router = useRouter();
@@ -11,7 +12,9 @@ export default function CreateDocument() {
 
   const searchParams = useSearchParams();
   const documentID = searchParams.get("id");
+  const user = getUser()
   useEffect(() => {
+    console.log(documentID)
     const getDocument = async () => {
       const res = await fetch(`documents/${documentID}`);
       const data = await res.json();
@@ -73,28 +76,31 @@ export default function CreateDocument() {
             className="flex flex-col"
             dangerouslySetInnerHTML={renderHTML(documentData?.document_HTML)}
           />
-          <div className="flex gap-4 justify-end mt-4">
-            <button
-              className="btn btn-accent text-white self-end mt-3"
-              onClick={() => {
-                const modal = document?.getElementById(
-                  "my_modal_3"
-                ) as HTMLDialogElement | null;
-                if (modal) {
-                  modal.showModal();
-                }
-              }}
-            >
-              Delete
-            </button>
-            {modalDelete}
-            <button
-              onClick={() => handleEdit()}
-              className="btn btn-secondary self-end mt-3"
-            >
-              Edit
-            </button>
-          </div>
+          {documentData.document_author_id === user.id ?
+            (<div className="flex gap-4 justify-end mt-4">
+              <button
+                className="btn btn-accent text-white self-end mt-3"
+                onClick={() => {
+                  const modal = document?.getElementById(
+                    "my_modal_3"
+                  ) as HTMLDialogElement | null;
+                  if (modal) {
+                    modal.showModal();
+                  }
+                }}
+              >
+                Delete
+              </button>
+              {modalDelete}
+              <button
+                onClick={() => handleEdit()}
+                className="btn btn-secondary self-end mt-3"
+              >
+                Edit
+              </button>
+            </div>)
+            : ""
+          }
         </div>
       ) : (
         <div className="mx-auto flex justify-center py-4 gap-4">
