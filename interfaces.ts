@@ -1,11 +1,9 @@
-import { ReactNode } from "react";
-
 export interface Document {
   document_id: number;
   document_title: string;
   document_content: string;
-  document_author_id: ReactNode;
-  document_category_id: string;
+  document_author_id: number;
+  document_category_id: number;
   document_created: string | number | Date;
   document_edited: string;
   document_HTML: string;
@@ -19,7 +17,7 @@ export interface QuillContent {
 }
 
 export interface User {
-  id: string;
+  id: number;
   user_id: number;
   user_name: string;
   user_email: string;

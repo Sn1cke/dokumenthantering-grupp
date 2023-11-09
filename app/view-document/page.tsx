@@ -71,7 +71,7 @@ export default function CreateDocument() {
           </h2>
           <div
             className="flex flex-col"
-            dangerouslySetInnerHTML={renderHTML(documentData?.textStyling)}
+            dangerouslySetInnerHTML={renderHTML(documentData?.document_HTML)}
           />
           <div className="flex gap-4 justify-end mt-4">
             <button

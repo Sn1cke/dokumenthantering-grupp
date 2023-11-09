@@ -1,34 +1,24 @@
 "use client";
 import Link from "next/link";
-import { Document } from "@/interfaces";
+import { Document, User } from "@/interfaces";
 import { HiDocumentText } from "react-icons/hi";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { useSession } from "next-auth/react";
 import Star from "@/components/Star";
-import { id } from "date-fns/locale";
 import { getUser } from "@/utils/utils";
 
 
 export default function DocumentsPage() {
   const { data: session } = useSession();
   const [documents, setDocuments] = useState([]);
+  const [user, setUser] = useState<User>()
   const router = useRouter();
 
   const viewDocument = (document: Document) => {
     router.push("/view-document/?id=" + document.document_id);
   };
-
-  useEffect(() => {
-    const getDocumentsData = async () => {
-      const user = getUser();
-      const result = await fetch("/api/users/" + user.id + "/documents");
-      const documentsFromAPI = await result.json();
-      setDocuments(documentsFromAPI.reverse());
-    };
-    getDocumentsData();
-  }, []);
 
   useEffect(() => {
     const createNewUser = async () => {
@@ -52,10 +42,19 @@ export default function DocumentsPage() {
             userName: newUser[0].user_name,
           })
         );
+        setUser(newUser);
       }
     };
+    const getDocumentsData = async () => {
+      const user = getUser();
+      const result = await fetch("/api/users/" + user.id + "/documents");
+      const documentsFromAPI = await result.json();
+      setDocuments(documentsFromAPI.reverse());
+    };
     createNewUser();
-  }, []);
+    getDocumentsData();
+
+  }, [session?.user]);
 
   const documentsData = documents.map((document: Document) => {
     const truncatedContent =
@@ -78,20 +77,10 @@ export default function DocumentsPage() {
 
 
     return (
-      <>
-      <tr
-
-        // onClick={() => viewDocument(document)}
-        // key={`document-${document.document_id}`}
-        // className="hover"
-
-      >
-        <td 
-
+      <tr key={document.document_id}>
+        <td
           onClick={() => viewDocument(document)}
           key={`document-${document.document_id}`}
-          
-        
           className="flex gap-2 items-center font-semibold hover:cursor-pointer">
           <HiDocumentText className="h-8 w-8 text-secondary" />
           {document.document_title}
@@ -99,14 +88,13 @@ export default function DocumentsPage() {
 
         <td className="hidden md:table-cell">{truncatedContent}</td>
         <td className="hidden sm:table-cell font-medium">
-          {document.document_author}
+          {document.document_author_id}
         </td>
         <td>{formattedDate}</td>
         <td>
-        <Star documentId={document.document_id} userId={id} addStar={addStar} removeStar={removeStar}/>
+          <Star documentId={document.document_id} userId={user?.id} addStar={addStar} removeStar={removeStar} />
         </td>
       </tr>
-      </>
     );
   });
 
@@ -123,7 +111,6 @@ export default function DocumentsPage() {
                   <th className="hidden md:table-cell">Preview</th>
                   <th className="hidden sm:table-cell">Author</th>
                   <th>Date created</th>
-                  <th>Favorite</th>
                 </tr>
               </thead>
               <tbody>{documentsData}</tbody>
@@ -132,7 +119,7 @@ export default function DocumentsPage() {
         ) : (
           <div className="mx-auto flex flex-col justify-center items-center py-4 gap-4 max-w-md">
             <span className="text-lg">
-              There doesn't seem to be anything here!
+              There doesn`&apos;`t seem to be anything here!
             </span>
             <Link href="/create">
               <button className="btn btn-secondary">Get started</button>
