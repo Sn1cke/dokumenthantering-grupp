@@ -14,7 +14,7 @@ export default function DocumentsPage() {
   const router = useRouter();
 
   const viewDocument = (document: Document) => {
-    router.push("/view-document/?id=" + document.id);
+    router.push("/view-document/?id=" + document.document_id);
   };
 
   useEffect(() => {
@@ -106,7 +106,7 @@ export default function DocumentsPage() {
         ) : (
           <div className="mx-auto flex flex-col justify-center items-center py-4 gap-4 max-w-md">
             <span className="text-lg">
-              There doesn't seem to be anything here!
+              There doesn`&apos;`t seem to be anything here!
             </span>
             <Link href="/create">
               <button className="btn btn-secondary">Get started</button>
