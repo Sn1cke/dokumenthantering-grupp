@@ -8,6 +8,8 @@ import { format } from "date-fns";
 import { useSession } from "next-auth/react";
 import Star from "@/components/Star";
 import { id } from "date-fns/locale";
+import { getUser } from "@/utils/utils";
+
 
 export default function DocumentsPage() {
   const { data: session } = useSession();
@@ -20,7 +22,8 @@ export default function DocumentsPage() {
 
   useEffect(() => {
     const getDocumentsData = async () => {
-      const result = await fetch("/api/documents");
+      const user = getUser()
+      const result = await fetch("/api/users/" + user.id+ "/documents");
       const documentsFromAPI = await result.json();
       setDocuments(documentsFromAPI.reverse());
     };
@@ -70,17 +73,21 @@ export default function DocumentsPage() {
       throw new Error("Function not implemented.");
     }
 
+
     return (
       <>
       <tr
+
         // onClick={() => viewDocument(document)}
         // key={`document-${document.document_id}`}
         // className="hover"
+
       >
         <td 
 
           onClick={() => viewDocument(document)}
           key={`document-${document.document_id}`}
+          
         
           className="flex gap-2 items-center font-semibold hover:cursor-pointer">
           <HiDocumentText className="h-8 w-8 text-secondary" />

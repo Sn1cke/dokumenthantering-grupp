@@ -1,4 +1,7 @@
+import { getUser } from '@/utils/utils';
 import { useEffect, useState } from 'react';
+import { useSession } from "next-auth/react";
+
 
 interface StarProps {
  documentId: number;
@@ -7,9 +10,26 @@ interface StarProps {
  removeStar: (documentId: number, userId: number) => void;
 }
 
-const Star: React.FC<StarProps> = ({ documentId, userId}) => {
+
+
+const Star: React.FC<StarProps> = ({ documentId}) => {
 //const [isStarred, setIsStarred] = useState(false);
-console.log(documentId, userId);
+
+const { data: session } = useSession();
+const [userId, setUserId] = useState<number>();
+
+useEffect(() => {
+const userJSON = localStorage.getItem("user");
+
+if (userJSON) {
+  const user = JSON.parse(userJSON);
+  if (user.email === session.user?.email) {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    setUserId(user.id);
+  }
+}
+}, [session.user?.email, userId]);
+
 
 const [isStarred, setIsStarred] = useState<boolean>(() => {
     // hämta det sparade tillståndet från localStorage när komponenten laddas in
@@ -24,7 +44,8 @@ const [isStarred, setIsStarred] = useState<boolean>(() => {
 
 
  const addStarToDocument = async (documentId: number, userId: number) => {
-   const response = await fetch(`/api/stars/${documentId}`, {
+  
+   const response = await fetch(`/api/star/${documentId}`, {
      method: 'POST',
      headers: {
        'Content-Type': 'application/json',
@@ -39,7 +60,7 @@ const [isStarred, setIsStarred] = useState<boolean>(() => {
 
 
   const removeStarFromDocument = async (documentId: number, userId: number) => {
-    const response = await fetch(`/api/stars/${documentId}`, {
+    const response = await fetch(`/api/star/${documentId}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -53,15 +74,10 @@ const [isStarred, setIsStarred] = useState<boolean>(() => {
     }
   };
 
-//  const handleClick = () => {
-//   addStarToDocument(documentId, userId);
-//   setIsStarred(!isStarred);
-//  };
-
 
 const handleClick = () => {
     if (isStarred) {
-      removeStarFromDocument(documentId, userId)
+      removeStarFromDocument(documentId, userId as number)
         .then(() => {
           setIsStarred(false);
         })
@@ -69,7 +85,7 @@ const handleClick = () => {
           console.error('Failed to remove star:', error);
         });
     } else {
-      addStarToDocument(documentId, userId)
+      addStarToDocument(documentId, userId as number)
         .then(() => {
           setIsStarred(true);
         })
