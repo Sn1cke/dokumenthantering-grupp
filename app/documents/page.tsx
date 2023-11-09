@@ -19,8 +19,8 @@ export default function DocumentsPage() {
 
   useEffect(() => {
     const getDocumentsData = async () => {
-      const user = getUser()
-      const result = await fetch("/api/users/" + user.id+ "/documents");
+      const user = getUser();
+      const result = await fetch("/api/users/" + user.id + "/documents");
       const documentsFromAPI = await result.json();
       setDocuments(documentsFromAPI.reverse());
     };
@@ -60,7 +60,10 @@ export default function DocumentsPage() {
         ? `${document.document_content.substring(0, 35)}...`
         : document.document_content;
 
-    const formattedDate = format(new Date(document.document_created), "yyyy-MM-dd");
+    const formattedDate = format(
+      new Date(document.document_created),
+      "yyyy-MM-dd"
+    );
 
     return (
       <tr
@@ -74,7 +77,9 @@ export default function DocumentsPage() {
         </td>
 
         <td className="hidden md:table-cell">{truncatedContent}</td>
-        <td className="hidden sm:table-cell font-medium">{document.document_author_id}</td>
+        <td className="hidden sm:table-cell font-medium">
+          {document.document_author}
+        </td>
         <td>{formattedDate}</td>
       </tr>
     );
