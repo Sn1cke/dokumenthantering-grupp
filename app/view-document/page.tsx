@@ -12,9 +12,8 @@ export default function CreateDocument() {
 
   const searchParams = useSearchParams();
   const documentID = searchParams.get("id");
-  const user = getUser()
+  const user = getUser();
   useEffect(() => {
-    console.log(documentID)
     const getDocument = async () => {
       const res = await fetch(`documents/${documentID}`);
       const data = await res.json();
@@ -76,8 +75,8 @@ export default function CreateDocument() {
             className="flex flex-col"
             dangerouslySetInnerHTML={renderHTML(documentData?.document_HTML)}
           />
-          {documentData.document_author_id === user.id ?
-            (<div className="flex gap-4 justify-end mt-4">
+          {documentData.document_author_id === user.id ? (
+            <div className="flex gap-4 justify-end mt-4">
               <button
                 className="btn btn-accent text-white self-end mt-3"
                 onClick={() => {
@@ -98,9 +97,10 @@ export default function CreateDocument() {
               >
                 Edit
               </button>
-            </div>)
-            : ""
-          }
+            </div>
+          ) : (
+            ""
+          )}
         </div>
       ) : (
         <div className="mx-auto flex justify-center py-4 gap-4">
