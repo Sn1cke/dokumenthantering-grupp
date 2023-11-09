@@ -9,6 +9,7 @@ export interface Document {
   document_HTML: string;
   document_private: string;
   document_deleted: string;
+  document_author: string;
 }
 
 export interface QuillContent {

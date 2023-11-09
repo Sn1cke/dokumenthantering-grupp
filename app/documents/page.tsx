@@ -9,11 +9,10 @@ import { useSession } from "next-auth/react";
 import Star from "@/components/Star";
 import { getUser } from "@/utils/utils";
 
-
 export default function DocumentsPage() {
   const { data: session } = useSession();
   const [documents, setDocuments] = useState([]);
-  const [user, setUser] = useState<User>()
+  const [user, setUser] = useState<User>();
   const router = useRouter();
 
   const viewDocument = (document: Document) => {
@@ -53,7 +52,6 @@ export default function DocumentsPage() {
     };
     createNewUser();
     getDocumentsData();
-
   }, [session?.user]);
 
   const documentsData = documents.map((document: Document) => {
@@ -75,24 +73,29 @@ export default function DocumentsPage() {
       throw new Error("Function not implemented.");
     }
 
-
     return (
       <tr key={document.document_id}>
         <td
           onClick={() => viewDocument(document)}
           key={`document-${document.document_id}`}
-          className="flex gap-2 items-center font-semibold hover:cursor-pointer">
+          className="flex gap-2 items-center font-semibold hover:cursor-pointer"
+        >
           <HiDocumentText className="h-8 w-8 text-secondary" />
           {document.document_title}
         </td>
 
         <td className="hidden md:table-cell">{truncatedContent}</td>
         <td className="hidden sm:table-cell font-medium">
-          {document.document_author_id}
+          {document.document_author}
         </td>
         <td>{formattedDate}</td>
         <td>
-          <Star documentId={document.document_id} userId={user?.id} addStar={addStar} removeStar={removeStar} />
+          <Star
+            documentId={document.document_id}
+            userId={user?.id}
+            addStar={addStar}
+            removeStar={removeStar}
+          />
         </td>
       </tr>
     );
