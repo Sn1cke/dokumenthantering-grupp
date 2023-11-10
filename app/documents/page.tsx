@@ -8,6 +8,7 @@ import { format } from "date-fns";
 import { useSession } from "next-auth/react";
 import Star from "@/components/Star";
 import { getUser } from "@/utils/utils";
+import { create } from "domain";
 
 export default function DocumentsPage() {
   const { data: session } = useSession();
@@ -21,27 +22,28 @@ export default function DocumentsPage() {
 
   useEffect(() => {
     const createNewUser = async () => {
-      const result = await fetch("api/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: session?.user?.email,
-          userName: session?.user?.name,
-        }),
-      });
-      if (result.ok) {
-        const newUser = await result.json();
-        localStorage.setItem(
-          "user",
-          JSON.stringify({
-            id: newUser[0].user_id,
-            email: newUser[0].user_email,
-            userName: newUser[0].user_name,
-          })
-        );
-        setUser(newUser);
+      try {
+        const data = await fetch("api/users", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: session?.user?.email,
+            userName: session?.user?.name,
+          }),
+        })
+        if (data?.ok) {
+          data.json()
+            .then(response => {
+              if (!response.message) {
+                setUser(response[0])
+              }
+            })
+        }
+      }
+      catch (error) {
+        console.error(error)
       }
     };
     const getDocumentsData = async () => {
@@ -50,7 +52,11 @@ export default function DocumentsPage() {
       const documentsFromAPI = await result.json();
       setDocuments(documentsFromAPI.reverse());
     };
-    createNewUser().then(() => getDocumentsData());
+    const run = async () => {
+      await createNewUser()
+      getDocumentsData()
+    }
+    run()
   }, [session?.user]);
 
   const documentsData = documents.map((document: Document) => {
