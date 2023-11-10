@@ -8,7 +8,7 @@ export async function GET(
   const { id } = params;
   const result = await dbQuery({
     sql: "SELECT * FROM documents where document_id=" + parseInt(id),
-    values: []
+    values: [],
   });
   return NextResponse.json(result);
 }
@@ -18,13 +18,15 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   const { id } = params;
-  const { title, content, textStyling } = await req.json();
+  const { document_title, document_content, document_HTML } = await req.json();
+
+  console.log(document_title, document_content, document_HTML);
 
   const result = await dbQuery({
     sql:
-      "UPDATE documents SET title=?, content=?, textStyling=? WHERE id=" +
+      "UPDATE documents SET document_title=?, document_content=?, document_HTML=? WHERE document_id=" +
       parseInt(id),
-    values: [title, content, textStyling]
+    values: [document_title, document_content, document_HTML],
   });
   return NextResponse.json(result, { status: 200 });
 }
@@ -35,8 +37,10 @@ export async function DELETE(
 ) {
   const { id } = params;
   const result = await dbQuery({
-    sql: "DELETE FROM documents where id=" + parseInt(id),
-    values: []
+    sql:
+      "UPDATE documents SET document_deleted=1 WHERE document_id=" +
+      parseInt(id),
+    values: [],
   });
   return NextResponse.json(result);
 }

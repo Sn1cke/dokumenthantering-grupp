@@ -78,7 +78,7 @@ export default function CreateDocument() {
       const res = await fetch(`documents/${documentID}`);
       const data = await res.json();
       setDocumentData(data[0]);
-      setDocTitle(data[0].title);
+      setDocTitle(data[0].document_title);
 
       if (data[0] && quill) {
         quill.clipboard.dangerouslyPasteHTML(data[0].content);
@@ -89,7 +89,7 @@ export default function CreateDocument() {
 
   useEffect(() => {
     if (quill && documentData) {
-      quill.clipboard.dangerouslyPasteHTML(documentData.textStyling);
+      quill.clipboard.dangerouslyPasteHTML(documentData.document_HTML);
 
       quill.on("text-change", () => {
         setQuillContent({
@@ -110,9 +110,9 @@ export default function CreateDocument() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        title: docTitle,
-        content: quillContent.quillText,
-        textStyling: quillContent.quillInnerHTML,
+        document_title: docTitle,
+        document_content: quillContent.quillText,
+        document_HTML: quillContent.quillInnerHTML,
       }),
     });
 

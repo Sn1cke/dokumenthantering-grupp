@@ -11,7 +11,8 @@ export async function GET(
       SELECT documents.*, users.user_name AS document_author
       FROM documents
       JOIN users ON documents.document_author_id = users.user_id
-      WHERE documents.document_author_id = ? OR documents.document_private = false
+      WHERE (documents.document_author_id = ? OR documents.document_private = false)
+      AND documents.document_deleted = false
     `,
     values: [id],
   });
