@@ -19,45 +19,39 @@ export default function DocumentsPage() {
   const viewDocument = (document: Document) => {
     router.push("/view-document/?id=" + document.document_id);
   };
-
+  const userEmail = session?.user?.email
   useEffect(() => {
-    const createNewUser = async () => {
-      try {
-        const data = await fetch("api/users", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: session?.user?.email,
-            userName: session?.user?.name,
-          }),
-        })
-        if (data?.ok) {
-          data.json()
-            .then(response => {
-              if (!response.message) {
-                setUser(response[0])
-              }
-            })
-        }
-      }
-      catch (error) {
-        console.error(error)
-      }
-    };
-    const getDocumentsData = async () => {
-      const user = getUser();
-      const result = await fetch("/api/users/" + user.id + "/documents");
-      const documentsFromAPI = await result.json();
-      setDocuments(documentsFromAPI.reverse());
-    };
-    const run = async () => {
-      await createNewUser()
-      getDocumentsData()
-    }
-    run()
-  }, [session?.user]);
+    fetch("api/users")
+      .then(res => res.json())
+      .then(data => console.log(data))
+
+
+    // fetch("api/users", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify({
+    //     email: session?.user?.email,
+    //     userName: session?.user?.name,
+    //   }),
+    // })
+    //   .then(data => data.json())
+    //   .then(res => {
+    //     if (!res.message) {
+    //     } else {
+    //       setUser(res[0])
+    //       fetch("/api/users/" + user?.id + "/documents")
+    //         .then(docData => docData.json())
+    //         .then(docs => console.log(docs))
+    //     }
+
+    //   })
+
+
+
+
+  }, [])
 
   const documentsData = documents.map((document: Document) => {
     const truncatedContent =
