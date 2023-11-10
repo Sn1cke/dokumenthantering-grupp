@@ -95,19 +95,19 @@ const Star: React.FC<StarProps> = ({ documentId }) => {
     <button onClick={handleClick}>
       {isStarred ?
         <Image
-          src='/star.svg'
-          width={24}
-          height={24}
-          alt={''}
-          className='mx-auto'
+        src={'/star_filled.svg'}
+        width={24}
+        height={24}
+        alt={''}
+        className='mx-auto'
         />
         :
         <Image
-          src={'/star_filled.svg'}
-          width={24}
-          height={24}
-          alt={''}
-          className='mx-auto'
+        src='/star.svg'
+        width={24}
+        height={24}
+        alt={''}
+        className='mx-auto'
         />
       }
     </button>
