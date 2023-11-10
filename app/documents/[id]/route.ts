@@ -18,15 +18,14 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   const { id } = params;
-  const { document_title, document_content, document_HTML } = await req.json();
-
-  console.log(document_title, document_content, document_HTML);
+  const { document_title, document_content, document_HTML, document_edited } =
+    await req.json();
 
   const result = await dbQuery({
     sql:
-      "UPDATE documents SET document_title=?, document_content=?, document_HTML=? WHERE document_id=" +
+      "UPDATE documents SET document_title=?, document_content=?, document_HTML=?, document_edited=? WHERE document_id=" +
       parseInt(id),
-    values: [document_title, document_content, document_HTML],
+    values: [document_title, document_content, document_HTML, document_edited],
   });
   return NextResponse.json(result, { status: 200 });
 }

@@ -5,6 +5,7 @@ import "quill/dist/quill.snow.css";
 import { QuillContent } from "@/interfaces";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Document } from "@/interfaces";
+import { getFormattedDate } from "@/utils/utils";
 
 export default function CreateDocument() {
   const router = useRouter();
@@ -113,6 +114,7 @@ export default function CreateDocument() {
         document_title: docTitle,
         document_content: quillContent.quillText,
         document_HTML: quillContent.quillInnerHTML,
+        document_edited: getFormattedDate(),
       }),
     });
 

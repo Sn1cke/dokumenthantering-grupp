@@ -4,13 +4,14 @@ import { useQuill } from "react-quilljs";
 import "quill/dist/quill.snow.css";
 import { QuillContent, User } from "@/interfaces";
 import { useRouter } from "next/navigation";
+import { getFormattedDate } from "@/utils/utils";
 
 export default function CreateDocument() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [docTitle, setDocTitle] = useState("");
-  const [isDocPrivate, setIsDocPrivate] = useState(false)
-  const [category, setCategory] = useState<string | null>(null)
+  const [isDocPrivate, setIsDocPrivate] = useState(false);
+  const [category, setCategory] = useState<string | null>(null);
   const [quillContent, setQuillContent] = useState<QuillContent>({
     quillText: "",
     quillInnerHTML: "",
@@ -58,28 +59,18 @@ export default function CreateDocument() {
   const placeholder = "Compose an epic...";
   const { quill, quillRef } = useQuill({ modules, formats, placeholder });
 
-  function getFormattedDate() {
-    const date = new Date();
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
-  }
-
   const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target) {
       setDocTitle(event.target.value);
     }
   };
   const handleCategoryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCategory(event.target.value)
-  }
+    setCategory(event.target.value);
+  };
   const viewDocumentAfterCreate = () => {
     router.push("/documents");
   };
-  useEffect(() => {
-  }, [category])
+  useEffect(() => {}, [category]);
   useEffect(() => {
     if (quill) {
       quill.on("text-change", () => {
@@ -91,8 +82,8 @@ export default function CreateDocument() {
     }
   }, [quill]);
   const handleSubmit = async (e: React.FormEvent) => {
-    const storageUser = localStorage.getItem("user")
-    const user: User = JSON.parse(storageUser as string)
+    const storageUser = localStorage.getItem("user");
+    const user: User = JSON.parse(storageUser as string);
 
     e.preventDefault();
     setIsLoading(true);
@@ -108,7 +99,8 @@ export default function CreateDocument() {
         dateCreated: getFormattedDate(),
         textStyling: quillContent.quillInnerHTML,
         isPrivate: isDocPrivate,
-        category: category
+        category: category,
+        lastEdited: getFormattedDate(),
       }),
     });
 
@@ -146,14 +138,16 @@ export default function CreateDocument() {
                 data-title="Human Resources"
                 className="btn"
                 value="1"
-                onChange={handleCategoryChange} />
+                onChange={handleCategoryChange}
+              />
               <input
                 type="radio"
                 name="options"
                 data-title="Financial Documents"
                 className="btn"
                 value="2"
-                onChange={handleCategoryChange} />
+                onChange={handleCategoryChange}
+              />
               <input
                 type="radio"
                 name="options"
@@ -175,15 +169,18 @@ export default function CreateDocument() {
               <label className="cursor-pointer label">
                 <span className="label-text mr-4">Pivate document</span>
                 <input
-                  onChange={() => setIsDocPrivate(!isDocPrivate)} type="checkbox"
-                  checked={isDocPrivate} className="checkbox checkbox-info"
+                  onChange={() => setIsDocPrivate(!isDocPrivate)}
+                  type="checkbox"
+                  checked={isDocPrivate}
+                  className="checkbox checkbox-info"
                 />
               </label>
             </div>
             <button
               type="submit"
-              className={`btn btn-secondary ${isLoading ? "opacity-70 cursor-not-allowed" : ""
-                }`}
+              className={`btn btn-secondary ${
+                isLoading ? "opacity-70 cursor-not-allowed" : ""
+              }`}
             >
               {isLoading ? "Adding" : "Add document"}
               {isLoading && (

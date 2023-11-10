@@ -10,11 +10,12 @@ export async function POST(req: Request, res: Response) {
       category,
       dateCreated,
       textStyling,
-      isPrivate
+      isPrivate,
+      lastEdited,
     } = await req.json();
 
     const result = await dbQuery({
-      sql: "INSERT INTO documents (document_title, document_content, document_created, document_author_id, document_category_id, document_HTML, document_private, document_deleted) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+      sql: "INSERT INTO documents (document_title, document_content, document_created, document_author_id, document_category_id, document_HTML, document_private, document_edited, document_deleted) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
       values: [
         title,
         content,
@@ -23,8 +24,9 @@ export async function POST(req: Request, res: Response) {
         category,
         textStyling,
         isPrivate,
-        false
-      ]
+        lastEdited,
+        false,
+      ],
     });
     return NextResponse.json(result);
   } catch (error) {
