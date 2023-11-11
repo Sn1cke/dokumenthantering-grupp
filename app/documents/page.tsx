@@ -15,6 +15,7 @@ export default function DocumentsPage() {
   const [user, setUser] = useState<User>();
   const router = useRouter();
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [filteredDocuments, setFilteredDocuments] = useState<Document[]>([]);
 
   const viewDocument = (document: Document) => {
     router.push("/view-document/?id=" + document.document_id);
@@ -45,23 +46,28 @@ export default function DocumentsPage() {
         setUser(newUser);
       }
     };
+
     const getDocumentsData = async () => {
       const user = getUser();
       const result = await fetch("/api/users/" + user.id + "/documents");
       const documentsFromAPI = await result.json();
-      const filteredDocuments =
-        selectedCategory === "all"
-          ? documentsFromAPI
-          : documentsFromAPI.filter(
-              (document: { document_category_id: number }) =>
-                document.document_category_id === parseInt(selectedCategory)
-            );
-      setDocuments(filteredDocuments.reverse());
+      setDocuments(documentsFromAPI.reverse());
     };
     createNewUser().then(() => getDocumentsData());
-  }, [session?.user, selectedCategory]);
+  }, [session?.user]);
 
-  const documentsData = documents.map((document: Document) => {
+  useEffect(() => {
+    const filteredDocuments =
+      selectedCategory === "all"
+        ? documents
+        : documents.filter(
+            (document: { document_category_id: number }) =>
+              document.document_category_id === parseInt(selectedCategory)
+          );
+    setFilteredDocuments(filteredDocuments);
+  }, [documents, selectedCategory]);
+
+  const documentsData = filteredDocuments.map((document: Document) => {
     const truncatedContent =
       document.document_content.length > 25
         ? `${document.document_content.substring(0, 35)}...`
