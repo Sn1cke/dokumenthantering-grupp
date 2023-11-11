@@ -129,25 +129,22 @@ export default function DocumentsPage() {
     <div>
       <div className="container mx-auto p-4 mb-16 mt-8">
         <h2 className="text-2xl font-bold text-secondary">Documents</h2>
-        <div className="flex flex-col mt-4">
-          <label>Filter by category</label>
-          <select
-            className="select select-bordered w-full max-w-xs mt-2"
-            value={selectedCategory}
-            onChange={e => {
-              setSelectedCategory(e.target.value);
-            }}
-          >
-            <option value="all">Show all</option>
-            <option value="uncategorized">Uncategorized</option>
-            <option value="1">Human Resources</option>
-            <option value="2">Financial Documents</option>
-            <option value="3">Project Management</option>
-            <option value="4">Sales and Marketing</option>
-          </select>
-        </div>
+        <select
+          className="select select-bordered w-full max-w-[240px] mt-4"
+          value={selectedCategory}
+          onChange={e => {
+            setSelectedCategory(e.target.value);
+          }}
+        >
+          <option value="all">All categories</option>
+          <option value="uncategorized">Uncategorized</option>
+          <option value="1">Human Resources</option>
+          <option value="2">Financial Documents</option>
+          <option value="3">Project Management</option>
+          <option value="4">Sales and Marketing</option>
+        </select>
         {documents ? (
-          <div className="overflow-x-auto mt-4">
+          <div className="overflow-x-auto mt-2">
             <table className="table table-zebra">
               <thead>
                 <tr>
