@@ -17,6 +17,8 @@ export default function DocumentsPage() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [filteredDocuments, setFilteredDocuments] = useState<Document[]>([]);
 
+  const categoryColors: string[] = ["#2ecc71", "#e74c3c", "#f39c12", "#f1c40f"];
+
   const viewDocument = (document: Document) => {
     router.push("/view-document/?id=" + document.document_id);
   };
@@ -60,6 +62,8 @@ export default function DocumentsPage() {
     const filteredDocuments =
       selectedCategory === "all"
         ? documents
+        : selectedCategory === "uncategorized"
+        ? documents.filter(document => document.document_category_id === null)
         : documents.filter(
             (document: { document_category_id: number }) =>
               document.document_category_id === parseInt(selectedCategory)
@@ -78,6 +82,10 @@ export default function DocumentsPage() {
       "yyyy-MM-dd"
     );
 
+    const categoryColor =
+      categoryColors[document.document_category_id - 1] || "007EBD";
+    console.log("Category Color:", categoryColor);
+
     function addStar(documentId: number, userId: number): void {
       throw new Error("Function not implemented.");
     }
@@ -93,7 +101,10 @@ export default function DocumentsPage() {
           key={`document-${document.document_id}`}
           className="flex gap-2 items-center font-semibold hover:cursor-pointer"
         >
-          <HiDocumentText className="h-8 w-8 text-secondary" />
+          <HiDocumentText
+            className={`h-8 w-8`}
+            style={{ color: categoryColor }}
+          />
           {document.document_title}
         </td>
 
@@ -128,6 +139,7 @@ export default function DocumentsPage() {
             }}
           >
             <option value="all">Show all</option>
+            <option value="uncategorized">Uncategorized</option>
             <option value="1">Human Resources</option>
             <option value="2">Financial Documents</option>
             <option value="3">Project Management</option>
