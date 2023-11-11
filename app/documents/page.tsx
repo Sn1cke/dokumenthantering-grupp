@@ -11,9 +11,10 @@ import { getUser } from "@/utils/utils";
 
 export default function DocumentsPage() {
   const { data: session } = useSession();
-  const [documents, setDocuments] = useState([]);
+  const [documents, setDocuments] = useState<Document[]>([]);
   const [user, setUser] = useState<User>();
   const router = useRouter();
+  const [selectedCategory, setSelectedCategory] = useState("all");
 
   const viewDocument = (document: Document) => {
     router.push("/view-document/?id=" + document.document_id);
@@ -48,10 +49,17 @@ export default function DocumentsPage() {
       const user = getUser();
       const result = await fetch("/api/users/" + user.id + "/documents");
       const documentsFromAPI = await result.json();
-      setDocuments(documentsFromAPI.reverse());
+      const filteredDocuments =
+        selectedCategory === "all"
+          ? documentsFromAPI
+          : documentsFromAPI.filter(
+              (document: { document_category_id: number }) =>
+                document.document_category_id === parseInt(selectedCategory)
+            );
+      setDocuments(filteredDocuments.reverse());
     };
     createNewUser().then(() => getDocumentsData());
-  }, [session?.user]);
+  }, [session?.user, selectedCategory]);
 
   const documentsData = documents.map((document: Document) => {
     const truncatedContent =
@@ -104,6 +112,22 @@ export default function DocumentsPage() {
     <div>
       <div className="container mx-auto p-4 mb-16 mt-8">
         <h2 className="text-2xl font-bold text-secondary">Documents</h2>
+        <div className="flex flex-col mt-4">
+          <label>Filter by category</label>
+          <select
+            className="select select-bordered w-full max-w-xs mt-2"
+            value={selectedCategory}
+            onChange={e => {
+              setSelectedCategory(e.target.value);
+            }}
+          >
+            <option value="all">Show all</option>
+            <option value="1">Human Resources</option>
+            <option value="2">Financial Documents</option>
+            <option value="3">Project Management</option>
+            <option value="4">Sales and Marketing</option>
+          </select>
+        </div>
         {documents ? (
           <div className="overflow-x-auto mt-4">
             <table className="table table-zebra">
