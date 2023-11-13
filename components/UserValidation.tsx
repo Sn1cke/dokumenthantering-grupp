@@ -1,5 +1,4 @@
 "use client";
-import { getUser } from "@/utils/utils";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import { ReactNode } from "react";

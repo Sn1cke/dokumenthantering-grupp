@@ -9,6 +9,32 @@ import { useSession } from "next-auth/react";
 import Star from "@/components/Star";
 import { getUser } from "@/utils/utils";
 
+
+/*
+steg 1, hämta alla dok som redan finns i DB
+
+
+  fetcha mot API
+
+  querrya alla dok där user_id stämmer osv
+  querrya alla favo där user id stämmer
+  mappa  över alla dokument 
+    mappa favo mot nuvarande dok
+    om dok_id === favo dok id sätt propp isFavo = true
+
+  returnera dok med korrekta favo propp
+
+  sortera dok på kategorier
+  sortera kategori på favo
+
+steg 2 uppdatera favoritmarkering
+
+är det rätt att skippa fetchen?
+
+  uppdatera prop för det dokumentet(och därmed state), skicka POST/DELETE till api
+
+*/
+
 export default function DocumentsPage() {
   const { data: session } = useSession();
   const [documents, setDocuments] = useState<Document[]>([]);
@@ -38,12 +64,13 @@ export default function DocumentsPage() {
         });
         if (result.ok) {
           const newUser = await result.json();
+
           localStorage.setItem(
             "user",
             JSON.stringify({
-              id: newUser[0].user_id,
-              email: newUser[0].user_email,
-              userName: newUser[0].user_name,
+              user_id: newUser[0].user_id,
+              user_email: newUser[0].user_email,
+              user_name: newUser[0].user_name,
             })
           );
           setUser(newUser);
@@ -52,7 +79,7 @@ export default function DocumentsPage() {
 
       const getDocumentsData = async () => {
         const user = getUser();
-        const result = await fetch("/api/users/" + user.id + "/documents");
+        const result = await fetch("/api/users/" + user.user_id + "/documents");
         const documentsFromAPI = await result.json();
         setDocuments(documentsFromAPI.reverse());
       };
@@ -60,34 +87,32 @@ export default function DocumentsPage() {
     }, [session?.user]);
 
   // sortera efter favourite
-  const sortDocuments = (documents: any[]) => {
+  const sortDocuments = (documents: Document[]) => {
     return documents.sort((a, b) => {
-      const aIsStarred = localStorage.getItem(`star-${a.document_id}`) === 'true';
-      const bIsStarred = localStorage.getItem(`star-${b.document_id}`) === 'true';
-      if (aIsStarred && !bIsStarred) {
-        return -1;
-      } else if (!aIsStarred && bIsStarred) {
-        return 1;
-      } else {
-        return 0;
+      if (a.document_favourited && !b.document_favourited) {
+        return -1; // a comes first
       }
+      if (!a.document_favourited && b.document_favourited) {
+        return 1; // b comes first
+      }
+      return 0; // no change
     });
   };
 
   useEffect(() => {
-    let d;
+    let filtered;
     if (selectedCategory === "all") {
-      d = documents;
+      filtered = documents;
     } else if (selectedCategory === "uncategorized") {
-      d = documents.filter(document => document.document_category_id === null);
+      filtered = documents.filter(document => document.document_category_id === null);
     } else {
-      d = documents.filter(
+      filtered = documents.filter(
         (document: { document_category_id: number }) =>
           document.document_category_id === parseInt(selectedCategory)
       );
     }
-
-    setFilteredDocuments(sortDocuments(d));
+    const sortedDocuments = sortDocuments(filtered)
+    setFilteredDocuments(sortedDocuments);
 
 
   }, [documents, selectedCategory, filteredDocuments]);
@@ -129,7 +154,7 @@ export default function DocumentsPage() {
         <td>
           <Star
             documentId={document.document_id}
-            userId={user?.id}
+            isStarred={document.document_favourited}
           />
         </td>
       </tr>

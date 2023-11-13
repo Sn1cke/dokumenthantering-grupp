@@ -83,7 +83,7 @@ export default function CreateDocument() {
             className="flex flex-col"
             dangerouslySetInnerHTML={renderHTML(documentData?.document_HTML)}
           />
-          {documentData.document_author_id === user.id ? (
+          {documentData.document_author_id === user.user_id ? (
             <div className="flex gap-4 justify-end mt-4">
               <button
                 className="btn btn-accent text-white self-end mt-3"

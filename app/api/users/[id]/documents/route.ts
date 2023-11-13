@@ -31,6 +31,8 @@ export async function GET(
     favos.map((favo) => {
       if (favo.document_id === doc.document_id) {
         doc.document_favourited = true;
+      } else {
+        doc.document_favourited = false;
       }
     });
   });
