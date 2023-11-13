@@ -1,6 +1,7 @@
 import { getUser } from '@/utils/utils';
 import Image from 'next/image'
 import { useEffect, useState } from 'react';
+import { isatty } from 'tty';
 
 interface StarProps {
   documentId: number;
@@ -13,6 +14,7 @@ const Star = ({ isStarred, documentId }: StarProps) => {
   const [starActive, setStarActive] = useState(isStarred)
   const user = getUser();
   const handleClick = () => {
+    console.log(isStarred)
     if (!isStarred) {
       fetch(`/api/star/${documentId}`, {
         method: 'POST',
@@ -37,7 +39,7 @@ const Star = ({ isStarred, documentId }: StarProps) => {
 
   return (
     <button onClick={handleClick}>
-      {isStarred ?
+      {starActive ?
         <Image
           src={'/star_filled.svg'}
           width={24}

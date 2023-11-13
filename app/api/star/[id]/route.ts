@@ -26,7 +26,6 @@ export async function POST(
       sql: "INSERT INTO favourites (user_id, document_id) VALUES (?, ?)",
       values: [user_id, document_id]
     });
-
     return NextResponse.json(result, { status: 200 });
   } catch (error) {
     console.error("FEL:", error);
