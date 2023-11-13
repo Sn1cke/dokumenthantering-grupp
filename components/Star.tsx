@@ -1,29 +1,23 @@
 import Image from 'next/image'
 import { useEffect, useState } from 'react';
-import { useSession } from "next-auth/react";
 
 interface StarProps {
   documentId: number;
   userId: number | undefined;
-  addStar: (documentId: number, userId: number) => void;
-  removeStar: (documentId: number, userId: number) => void;
 }
 
 
 
 const Star: React.FC<StarProps> = ({ documentId }) => {
-  const { data: session } = useSession();
   const [userId, setUserId] = useState<number>();
 
   useEffect(() => {
     const userJSON = localStorage.getItem("user");
     if (userJSON) {
       const user = JSON.parse(userJSON);
-      if (user.email === session?.user?.email) {
-        setUserId(user.id);
-      }
+      setUserId(user.id);
     }
-  }, [session?.user?.email, userId]);
+  }, [userId]);
 
 
   const [isStarred, setIsStarred] = useState<boolean>(() => {
@@ -95,19 +89,19 @@ const Star: React.FC<StarProps> = ({ documentId }) => {
     <button onClick={handleClick}>
       {isStarred ?
         <Image
-        src={'/star_filled.svg'}
-        width={24}
-        height={24}
-        alt={''}
-        className='mx-auto'
+          src={'/star_filled.svg'}
+          width={24}
+          height={24}
+          alt={''}
+          className='mx-auto'
         />
         :
         <Image
-        src='/star.svg'
-        width={24}
-        height={24}
-        alt={''}
-        className='mx-auto'
+          src='/star.svg'
+          width={24}
+          height={24}
+          alt={''}
+          className='mx-auto'
         />
       }
     </button>

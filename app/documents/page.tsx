@@ -23,59 +23,81 @@ export default function DocumentsPage() {
     router.push("/view-document/?id=" + document.document_id);
   };
 
-  useEffect(() => {
-    const createNewUser = async () => {
-      const result = await fetch("api/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: session?.user?.email,
-          userName: session?.user?.name,
-        }),
-      });
-      if (result.ok) {
-        const newUser = await result.json();
-        localStorage.setItem(
-          "user",
-          JSON.stringify({
-            id: newUser[0].user_id,
-            email: newUser[0].user_email,
-            userName: newUser[0].user_name,
-          })
-        );
-        setUser(newUser);
-      }
-    };
-
-    const getDocumentsData = async () => {
-      const user = getUser();
-      const result = await fetch("/api/users/" + user.id + "/documents");
-      const documentsFromAPI = await result.json();
-      setDocuments(documentsFromAPI.reverse());
-    };
-    createNewUser().then(() => getDocumentsData());
-  }, [session?.user]);
-
-  useEffect(() => {
-    const filteredDocuments =
-      selectedCategory === "all"
-        ? documents
-        : selectedCategory === "uncategorized"
-        ? documents.filter(document => document.document_category_id === null)
-        : documents.filter(
-            (document: { document_category_id: number }) =>
-              document.document_category_id === parseInt(selectedCategory)
+  useEffect(
+    () => {
+      const createNewUser = async () => {
+        const result = await fetch("api/users", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: session?.user?.email,
+            userName: session?.user?.name,
+          }),
+        });
+        if (result.ok) {
+          const newUser = await result.json();
+          localStorage.setItem(
+            "user",
+            JSON.stringify({
+              id: newUser[0].user_id,
+              email: newUser[0].user_email,
+              userName: newUser[0].user_name,
+            })
           );
-    setFilteredDocuments(filteredDocuments);
-  }, [documents, selectedCategory]);
+          setUser(newUser);
+        }
+      };
+
+      const getDocumentsData = async () => {
+        const user = getUser();
+        const result = await fetch("/api/users/" + user.id + "/documents");
+        const documentsFromAPI = await result.json();
+        setDocuments(documentsFromAPI.reverse());
+      };
+      createNewUser().then(() => getDocumentsData());
+    }, [session?.user]);
+
+  // sortera efter favourite
+  const sortDocuments = (documents: any[]) => {
+    return documents.sort((a, b) => {
+      const aIsStarred = localStorage.getItem(`star-${a.document_id}`) === 'true';
+      const bIsStarred = localStorage.getItem(`star-${b.document_id}`) === 'true';
+      if (aIsStarred && !bIsStarred) {
+        return -1;
+      } else if (!aIsStarred && bIsStarred) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+  };
+
+  useEffect(() => {
+    let d;
+    if (selectedCategory === "all") {
+      d = documents;
+    } else if (selectedCategory === "uncategorized") {
+      d = documents.filter(document => document.document_category_id === null);
+    } else {
+      d = documents.filter(
+        (document: { document_category_id: number }) =>
+          document.document_category_id === parseInt(selectedCategory)
+      );
+    }
+
+    setFilteredDocuments(sortDocuments(d));
+
+
+  }, [documents, selectedCategory, filteredDocuments]);
 
   const documentsData = filteredDocuments.map((document: Document) => {
     const truncatedContent =
       document.document_content.length > 25
         ? `${document.document_content.substring(0, 35)}...`
         : document.document_content;
+
 
     const formattedDate = format(
       new Date(document.document_created),
@@ -84,15 +106,6 @@ export default function DocumentsPage() {
 
     const categoryColor =
       categoryColors[document.document_category_id - 1] || "007EBD";
-    console.log("Category Color:", categoryColor);
-
-    function addStar(documentId: number, userId: number): void {
-      throw new Error("Function not implemented.");
-    }
-
-    function removeStar(documentId: number, userId: number): void {
-      throw new Error("Function not implemented.");
-    }
 
     return (
       <tr key={document.document_id}>
@@ -117,8 +130,6 @@ export default function DocumentsPage() {
           <Star
             documentId={document.document_id}
             userId={user?.id}
-            addStar={addStar}
-            removeStar={removeStar}
           />
         </td>
       </tr>
