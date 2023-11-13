@@ -10,6 +10,7 @@ export interface Document {
   document_private: string;
   document_deleted: string;
   document_author: string;
+  document_favourited: boolean;
 }
 
 export interface QuillContent {
