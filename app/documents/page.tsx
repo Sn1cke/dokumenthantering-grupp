@@ -19,7 +19,8 @@ export default function DocumentsPage() {
     router.push("/view-document/?id=" + document.document_id);
   };
 
-  useEffect(() => {
+  useEffect(
+    () => {
     const createNewUser = async () => {
       const result = await fetch("api/users", {
         method: "POST",
@@ -53,11 +54,30 @@ export default function DocumentsPage() {
     createNewUser().then(() => getDocumentsData());
   }, [session?.user]);
 
-  const documentsData = documents.map((document: Document) => {
+
+  // sortera efter favourite
+  const sortDocuments = (documents: any[]) => {
+    return documents.sort((a, b) => {
+      const aIsStarred = localStorage.getItem(`star-${a.document_id}`) === 'true';
+      const bIsStarred = localStorage.getItem(`star-${b.document_id}`) === 'true';
+      if (aIsStarred && !bIsStarred) {
+        return -1;
+      } else if (!aIsStarred && bIsStarred) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+  };
+  const sortedDocuments = sortDocuments(documents);
+
+
+  const documentsData = sortedDocuments.map((document: Document) => {
     const truncatedContent =
       document.document_content.length > 25
         ? `${document.document_content.substring(0, 35)}...`
         : document.document_content;
+        
 
     const formattedDate = format(
       new Date(document.document_created),

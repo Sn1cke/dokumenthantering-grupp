@@ -6,7 +6,7 @@ export async function GET(req: Request, { params }: { params: { user_id: string 
     const { user_id } = params;
   
     const result = await dbQuery({
-      sql: 'SELECT * FROM stars WHERE user_id = ?',
+      sql: 'SELECT * FROM favourites WHERE user_id = ?',
       values: [user_id],
     });
   
