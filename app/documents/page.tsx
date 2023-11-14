@@ -7,23 +7,42 @@ import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { useSession } from "next-auth/react";
 import Star from "@/components/Star";
-import { getUser } from "@/utils/utils";
-import { create } from "domain";
+import { setUser } from "@/utils/utils";
 
 export default function DocumentsPage() {
   const { data: session } = useSession();
   const [documents, setDocuments] = useState([]);
-  const [user, setUser] = useState<User>();
   const router = useRouter();
 
   const viewDocument = (document: Document) => {
     router.push("/view-document/?id=" + document.document_id);
   };
-  const userEmail = session?.user?.email
   useEffect(() => {
-    fetch("api/users")
+    fetch("api/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: session?.user?.email,
+        userName: session?.user?.name,
+      }),
+    })
       .then(res => res.json())
-      .then(data => console.log(data))
+      .then(userData => {
+        console.log(userData)
+        if (userData.message) {
+          return
+        }
+        const newUser: User = userData[0]
+        setUser(newUser)
+        console.log(newUser)
+        fetch(`api/users/${newUser.user_id}/documents`)
+          .then(res => res.json())
+          .then(docData => {
+            setDocuments(docData)
+          })
+      })
 
 
     // fetch("api/users", {
@@ -48,6 +67,11 @@ export default function DocumentsPage() {
 
     //   })
 
+    /*
+      logga in med google -> skicka e-post till ny endpoint -> användare finns? -> returnera användaren -> spara användare i LS
+    
+      -> användare finns inte? -> skapa användare -> retyrbera användaren -> spara användare i LS
+    */
 
 
 
@@ -91,7 +115,7 @@ export default function DocumentsPage() {
         <td>
           <Star
             documentId={document.document_id}
-            userId={user?.id}
+            userId={1}
             addStar={addStar}
             removeStar={removeStar}
           />
