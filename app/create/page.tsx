@@ -1,5 +1,5 @@
 "use client";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuill } from "react-quilljs";
 import "quill/dist/quill.snow.css";
 import { QuillContent, User } from "@/interfaces";
@@ -64,7 +64,9 @@ export default function CreateDocument() {
       setDocTitle(event.target.value);
     }
   };
-  const handleCategoryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCategoryChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
     setCategory(event.target.value);
   };
   const viewDocumentAfterCreate = () => {
@@ -130,51 +132,30 @@ export default function CreateDocument() {
             onChange={handleTitleChange}
           />
           <div className="flex-grow" ref={quillRef} />
-          <div className="self-end mt-3 flex gap-4">
-            <div className="btn-group btn-group-vertical">
-              <input
-                type="radio"
-                name="options"
-                data-title="Human Resources"
-                className="btn"
-                value="1"
+          <div className="flex flex-col md:flex-row md:justify-between mt-4 gap-4">
+            <div className="flex gap-4 justify-between">
+              <select
+                className="select select-secondary w-full max-w-xs"
+                value={category === null ? "" : category.toString()}
                 onChange={handleCategoryChange}
-              />
-              <input
-                type="radio"
-                name="options"
-                data-title="Financial Documents"
-                className="btn"
-                value="2"
-                onChange={handleCategoryChange}
-              />
-              <input
-                type="radio"
-                name="options"
-                data-title="Project Management"
-                className="btn"
-                value="3"
-                onChange={handleCategoryChange}
-              />
-              <input
-                type="radio"
-                name="options"
-                data-title="Sales and Marketing"
-                className="btn"
-                value="4"
-                onChange={handleCategoryChange}
-              />
-            </div>
-            <div className=" self-center form-control">
-              <label className="cursor-pointer label">
-                <span className="label-text mr-4">Pivate document</span>
-                <input
-                  onChange={() => setIsDocPrivate(!isDocPrivate)}
-                  type="checkbox"
-                  checked={isDocPrivate}
-                  className="checkbox checkbox-info"
-                />
-              </label>
+              >
+                <option>Select category</option>
+                <option value="1">Human Resources</option>
+                <option value="2">Financial Documents</option>
+                <option value="3">Project Management</option>
+                <option value="4">Sales and Marketing</option>
+              </select>
+              <div className="self-center form-control">
+                <label className="cursor-pointer label">
+                  <span className="label-text font-medium mr-2">Private</span>
+                  <input
+                    onChange={() => setIsDocPrivate(!isDocPrivate)}
+                    type="checkbox"
+                    checked={isDocPrivate}
+                    className="checkbox checkbox-secondary"
+                  />
+                </label>
+              </div>
             </div>
             <button
               type="submit"
