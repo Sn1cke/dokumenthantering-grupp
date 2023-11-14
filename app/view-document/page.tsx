@@ -20,7 +20,7 @@ export default function CreateDocument() {
       setDocumentData(data[0]);
     };
     if (documentID) getDocument();
-  }, []);
+  }, [documentID]);
 
   const renderHTML = (htmlString: string | undefined) => {
     return { __html: htmlString || "" };
