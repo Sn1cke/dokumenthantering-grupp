@@ -9,31 +9,6 @@ import { useSession } from "next-auth/react";
 import Star from "@/components/Star";
 import { setUser } from "@/utils/utils";
 
-/*
-steg 1, hämta alla dok som redan finns i DB
-
-
-  fetcha mot API
-
-  querrya alla dok där user_id stämmer osv
-  querrya alla favo där user id stämmer
-  mappa  över alla dokument 
-    mappa favo mot nuvarande dok
-    om dok_id === favo dok id sätt propp isFavo = true
-
-  returnera dok med korrekta favo propp
-
-  sortera dok på kategorier
-  sortera kategori på favo
-
-steg 2 uppdatera favoritmarkering
-
-är det rätt att skippa fetchen?
-
-  uppdatera prop för det dokumentet(och därmed state), skicka POST/DELETE till api
-
-*/
-
 export default function DocumentsPage() {
   const { data: session } = useSession();
   const [documents, setDocuments] = useState<Document[]>([]);
