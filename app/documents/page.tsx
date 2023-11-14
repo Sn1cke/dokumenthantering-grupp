@@ -30,52 +30,18 @@ export default function DocumentsPage() {
     })
       .then(res => res.json())
       .then(userData => {
-        console.log(userData)
         if (userData.message) {
           return
         }
         const newUser: User = userData[0]
         setUser(newUser)
-        console.log(newUser)
         fetch(`api/users/${newUser.user_id}/documents`)
           .then(res => res.json())
           .then(docData => {
             setDocuments(docData)
           })
       })
-
-
-    // fetch("api/users", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({
-    //     email: session?.user?.email,
-    //     userName: session?.user?.name,
-    //   }),
-    // })
-    //   .then(data => data.json())
-    //   .then(res => {
-    //     if (!res.message) {
-    //     } else {
-    //       setUser(res[0])
-    //       fetch("/api/users/" + user?.id + "/documents")
-    //         .then(docData => docData.json())
-    //         .then(docs => console.log(docs))
-    //     }
-
-    //   })
-
-    /*
-      logga in med google -> skicka e-post till ny endpoint -> användare finns? -> returnera användaren -> spara användare i LS
-    
-      -> användare finns inte? -> skapa användare -> retyrbera användaren -> spara användare i LS
-    */
-
-
-
-  }, [])
+  }, [session?.user])
 
   const documentsData = documents.map((document: Document) => {
     const truncatedContent =

@@ -10,7 +10,6 @@ export async function POST(req: Request, res: Response) {
       values: [email]
     });
     if (Array.isArray(userExists) && userExists.length > 0) {
-      console.log("userExists");
       return NextResponse.json(userExists);
     }
     await dbQuery({
@@ -24,7 +23,6 @@ export async function POST(req: Request, res: Response) {
     });
     return NextResponse.json(newUser);
   } catch (error) {
-    console.error("Här blev det fel: ", error);
     return NextResponse.json({ message: error });
   }
 }
