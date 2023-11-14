@@ -152,6 +152,7 @@ export default function DocumentsPage() {
           <Star
             documentId={document.document_id}
             isStarred={document.document_favourited}
+            updateStar={updateStar()}
           />
         </td>
       </tr>

@@ -36,6 +36,5 @@ export async function GET(
       }
     });
   });
-  console.log(documents);
   return NextResponse.json(documents);
 }
