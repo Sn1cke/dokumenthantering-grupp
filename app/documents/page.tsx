@@ -42,6 +42,7 @@ export default function DocumentsPage() {
         fetch(`api/users/${newUser.user_id}/documents`)
           .then(res => res.json())
           .then(docData => {
+            docData.reverse()
             setDocuments(docData)
           })
       })
@@ -73,7 +74,6 @@ export default function DocumentsPage() {
 
     const categoryColor =
       categoryColors[document.document_category_id - 1] || "007EBD";
-    console.log("Category Color:", categoryColor);
 
     function addStar(documentId: number, userId: number): void {
       throw new Error("Function not implemented.");

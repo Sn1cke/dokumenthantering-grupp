@@ -72,7 +72,7 @@ export default function CreateDocument() {
   const viewDocumentAfterCreate = () => {
     router.push("/documents");
   };
-  useEffect(() => {}, [category]);
+  useEffect(() => { }, [category]);
   useEffect(() => {
     if (quill) {
       quill.on("text-change", () => {
@@ -97,7 +97,7 @@ export default function CreateDocument() {
       body: JSON.stringify({
         title: docTitle,
         content: quillContent.quillText,
-        author: user.id,
+        author: user.user_id,
         dateCreated: getFormattedDate(),
         textStyling: quillContent.quillInnerHTML,
         isPrivate: isDocPrivate,
@@ -159,9 +159,8 @@ export default function CreateDocument() {
             </div>
             <button
               type="submit"
-              className={`btn btn-secondary ${
-                isLoading ? "opacity-70 cursor-not-allowed" : ""
-              }`}
+              className={`btn btn-secondary ${isLoading ? "opacity-70 cursor-not-allowed" : ""
+                }`}
             >
               {isLoading ? "Adding" : "Add document"}
               {isLoading && (
