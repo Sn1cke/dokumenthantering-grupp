@@ -35,6 +35,7 @@ export default function CreateDocument() {
 
   const handleEdit = () => {
     router.push("/edit-document/?id=" + documentID);
+    console.log(documentData);
   };
 
   const modalDelete = (
@@ -65,22 +66,25 @@ export default function CreateDocument() {
   );
 
   const formatDate = (date: string | number | Date) => {
-    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-    return new Date(date).toLocaleDateString('sv-SE');
+    const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+    return new Date(date).toLocaleDateString("sv-SE");
   };
 
   return (
     <div className="container mx-auto p-4 mb-16 mt-8">
       {documentData ? (
         <div className="max-w-screen-lg mx-auto">
-          <h2 className="text-2xl font-bold text-primary mb-2">
+          <h2 className="text-2xl font-bold text-primary">
             {documentData?.document_title}
           </h2>
-          <div className="flex pb-6 pt-2 text-xs"
-          >Last edited: {formatDate(documentData?.document_edited)}
+          <div className="flex flex-col text-xs">
+            {/* <span>Author: {documentData.document_author}</span> */}
+            <span>
+              Last edited: {formatDate(documentData?.document_edited)}
+            </span>
           </div>
           <div
-            className="flex flex-col"
+            className="flex flex-col mt-4"
             dangerouslySetInnerHTML={renderHTML(documentData?.document_HTML)}
           />
           {documentData.document_author_id === user.user_id ? (

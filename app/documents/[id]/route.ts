@@ -7,7 +7,12 @@ export async function GET(
 ) {
   const { id } = params;
   const result = await dbQuery({
-    sql: "SELECT * FROM documents where document_id=" + parseInt(id),
+    sql: `
+    SELECT documents.*, users.user_name as document_author
+    FROM documents
+    INNER JOIN users ON documents.document_author_id = users.user_id
+    WHERE documents.document_id = ${parseInt(id)}
+  `,
     values: [],
   });
   return NextResponse.json(result);
