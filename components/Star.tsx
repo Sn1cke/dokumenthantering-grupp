@@ -37,11 +37,11 @@ const Star = ({ isStarred, documentId, updateStar }: StarProps) => {
       });
       setStarActive(!starActive);
     }
-    updateStar(documentId)
+    updateStar(documentId);
   };
 
   return (
-    <button onClick={handleClick}>
+    <button onClick={handleClick} className="min-w-[42px]">
       {starActive ? (
         <Image
           src={"/star_filled.svg"}

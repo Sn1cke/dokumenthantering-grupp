@@ -35,7 +35,6 @@ export default function CreateDocument() {
 
   const handleEdit = () => {
     router.push("/edit-document/?id=" + documentID);
-    console.log(documentData);
   };
 
   const modalDelete = (

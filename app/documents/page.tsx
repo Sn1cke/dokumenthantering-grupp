@@ -41,7 +41,7 @@ export default function DocumentsPage() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [filteredDocuments, setFilteredDocuments] = useState<Document[]>([]);
 
-  const categoryColors: string[] = ["#2ecc71", "#e74c3c", "#f39c12", "#f1c40f"];
+  const categoryColors: string[] = ["#3ad184", "#e66757", "#f4b350", "#f7d954"];
 
   const viewDocument = (document: Document) => {
     router.push("/view-document/?id=" + document.document_id);
@@ -61,19 +61,18 @@ export default function DocumentsPage() {
       .then(res => res.json())
       .then(userData => {
         if (userData.message) {
-          return
+          return;
         }
-        const newUser: User = userData[0]
-        setUser(newUser)
+        const newUser: User = userData[0];
+        setUser(newUser);
         fetch(`api/users/${newUser.user_id}/documents`)
           .then(res => res.json())
           .then(docData => {
-            console.log(docData)
-            docData.reverse()
-            setDocuments(docData)
-          })
-      })
-  }, [session?.user])
+            docData.reverse();
+            setDocuments(docData);
+          });
+      });
+  }, [session?.user]);
 
   // sortera efter favourite
   const sortDocuments = (documents: Document[]) => {
@@ -87,7 +86,6 @@ export default function DocumentsPage() {
       return 0; // no change
     });
   };
-
 
   //Filtrering på category
   useEffect(() => {
@@ -122,7 +120,10 @@ export default function DocumentsPage() {
     const updateStar = (docId: number) => {
       const updatedDocuments = documents.map(document => {
         if (document.document_id === docId) {
-          return { ...document, document_favourited: !document.document_favourited };
+          return {
+            ...document,
+            document_favourited: !document.document_favourited,
+          };
         }
         return document;
       });
@@ -140,8 +141,8 @@ export default function DocumentsPage() {
           className="flex gap-2 items-center font-semibold hover:cursor-pointer"
         >
           <HiDocumentText
-            className={`h-8 w-8`}
-            style={{ color: categoryColor }}
+            className="h-8 w-8"
+            style={{ color: categoryColor, flex: "none" }}
           />
           {document.document_title}
         </td>
@@ -194,10 +195,8 @@ export default function DocumentsPage() {
             </table>
           </div>
         ) : (
-          <div className="mx-auto flex flex-col justify-center items-center py-4 gap-4 max-w-md">
-            <span className="text-lg">
-              There doesn`&apos;`t seem to be anything here!
-            </span>
+          <div className="mx-auto mt-[calc(10vh)] flex flex-col justify-center items-center py-4 gap-4 max-w-md">
+            <span className="text-xl">It seems to be empty! 😥</span>
             <Link href="/create">
               <button className="btn btn-secondary">Get started</button>
             </Link>
