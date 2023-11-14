@@ -25,7 +25,7 @@ git clone git@github.com:Sn1cke/dokumenthantering.git
 
 2. Change into the project directory
 ```sh
-cd dokumenthantering
+cd dokumenthantering-grupp
 ```
 
 3. Install the project dependencies
@@ -52,3 +52,5 @@ Create new document
 Edit existing document
 
 Delete document
+
+Favourite document
