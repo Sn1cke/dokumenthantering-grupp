@@ -77,16 +77,20 @@ export default function CreateDocument() {
           <h2 className="text-2xl font-bold text-primary">
             {documentData?.document_title}
           </h2>
-          <div className="flex flex-col text-xs">
-            {/* <span>Author: {documentData.document_author}</span> */}
-            <span>
-              Last edited: {formatDate(documentData?.document_edited)}
+          <div className="text-xs">
+            <span className="font-bold">
+              Created by {documentData.document_author}
             </span>
           </div>
+
           <div
             className="flex flex-col mt-4"
             dangerouslySetInnerHTML={renderHTML(documentData?.document_HTML)}
           />
+          <div className="mt-4 text-sm italic ">
+            Last edited: {formatDate(documentData?.document_edited)}
+          </div>
+
           {documentData.document_author_id === user.user_id ? (
             <div className="flex gap-4 justify-end mt-4">
               <button
