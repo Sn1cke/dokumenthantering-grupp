@@ -19,7 +19,7 @@ const Sidebar = ({ sidebarVisible, closeSidebar }: SidebarProps) => {
       <div className="p-4 flex justify-between items-center">
         {sidebarVisible && session ? (
           <Link href="/documents">
-            <div className="text-neutral-content font-semibold">Documents</div>
+            <div onClick={closeSidebar} className="text-neutral-content font-semibold">Documents</div>
           </Link>
         ) : null}
         <button
@@ -32,17 +32,18 @@ const Sidebar = ({ sidebarVisible, closeSidebar }: SidebarProps) => {
       {sidebarVisible && session ? (
         <nav className="flex flex-col gap-4 p-4">
           <Link href="/create">
-            <div className="text-neutral-content font-semibold">Create new</div>
+            <div onClick={closeSidebar} className="text-neutral-content font-semibold">Create new</div>
           </Link>
+ 
           <Link href="/login">
-            <div className="text-neutral-content font-semibold">Sign out</div>
+            <div onClick={closeSidebar} className="text-neutral-content font-semibold">Sign out</div>
           </Link>
         </nav>
       ) : null}
       {sidebarVisible && !session ? (
         <div className="login-button p-4">
           <Link href="/login">
-            <div className="text-neutral-content font-semibold">Login</div>
+            <div onClick={closeSidebar} className="text-neutral-content font-semibold">Login</div>
           </Link>
         </div>
       ) : null}
@@ -51,6 +52,7 @@ const Sidebar = ({ sidebarVisible, closeSidebar }: SidebarProps) => {
 };
 
 export default Sidebar;
+
 
 
 

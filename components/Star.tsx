@@ -5,14 +5,13 @@ import { useState } from "react";
 interface StarProps {
   documentId: number;
   isStarred: boolean;
-  updateStar: () => void;
+  updateStar: (docId: number) => void;
 }
 
 const Star = ({ isStarred, documentId, updateStar }: StarProps) => {
-  const [starActive, setStarActive] = useState(isStarred);
+  const [starActive, setStarActive] = useState(isStarred ?? false);
   const user = getUser();
   const handleClick = () => {
-    console.log(starActive);
     if (!starActive) {
       fetch(`/api/star/${documentId}`, {
         method: "POST",
@@ -38,7 +37,7 @@ const Star = ({ isStarred, documentId, updateStar }: StarProps) => {
       });
       setStarActive(!starActive);
     }
-    updateStar()
+    updateStar(documentId)
   };
 
   return (

@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { useSession } from "next-auth/react";
 import Star from "@/components/Star";
-import { getUser } from "@/utils/utils";
+import { setUser } from "@/utils/utils";
 
 /*
 steg 1, hämta alla dok som redan finns i DB
@@ -37,7 +37,6 @@ steg 2 uppdatera favoritmarkering
 export default function DocumentsPage() {
   const { data: session } = useSession();
   const [documents, setDocuments] = useState<Document[]>([]);
-  const [user, setUser] = useState<User>();
   const router = useRouter();
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [filteredDocuments, setFilteredDocuments] = useState<Document[]>([]);
@@ -47,42 +46,34 @@ export default function DocumentsPage() {
   const viewDocument = (document: Document) => {
     router.push("/view-document/?id=" + document.document_id);
   };
-
+  //hämta user & document
   useEffect(() => {
-    const createNewUser = async () => {
-      const result = await fetch("api/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: session?.user?.email,
-          userName: session?.user?.name,
-        }),
-      });
-      if (result.ok) {
-        const newUser = await result.json();
-
-        localStorage.setItem(
-          "user",
-          JSON.stringify({
-            user_id: newUser[0].user_id,
-            user_email: newUser[0].user_email,
-            user_name: newUser[0].user_name,
+    fetch("api/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: session?.user?.email,
+        userName: session?.user?.name,
+      }),
+    })
+      .then(res => res.json())
+      .then(userData => {
+        if (userData.message) {
+          return
+        }
+        const newUser: User = userData[0]
+        setUser(newUser)
+        fetch(`api/users/${newUser.user_id}/documents`)
+          .then(res => res.json())
+          .then(docData => {
+            console.log(docData)
+            docData.reverse()
+            setDocuments(docData)
           })
-        );
-        setUser(newUser);
-      }
-    };
-
-    const getDocumentsData = async () => {
-      const user = getUser();
-      const result = await fetch("/api/users/" + user.user_id + "/documents");
-      const documentsFromAPI = await result.json();
-      setDocuments(documentsFromAPI.reverse());
-    };
-    createNewUser().then(() => getDocumentsData());
-  }, [session?.user]);
+      })
+  }, [session?.user])
 
   // sortera efter favourite
   const sortDocuments = (documents: Document[]) => {
@@ -97,6 +88,8 @@ export default function DocumentsPage() {
     });
   };
 
+
+  //Filtrering på category
   useEffect(() => {
     let filtered;
     if (selectedCategory === "all") {
@@ -114,7 +107,7 @@ export default function DocumentsPage() {
     const sortedDocuments = sortDocuments(filtered);
     setFilteredDocuments(sortedDocuments);
   }, [documents, selectedCategory]);
-
+  //Print docs
   const documentsData = filteredDocuments.map((document: Document) => {
     const truncatedContent =
       document.document_content.length > 25
@@ -125,6 +118,16 @@ export default function DocumentsPage() {
       new Date(document.document_created),
       "yyyy-MM-dd"
     );
+
+    const updateStar = (docId: number) => {
+      const updatedDocuments = documents.map(document => {
+        if (document.document_id === docId) {
+          return { ...document, document_favourited: !document.document_favourited };
+        }
+        return document;
+      });
+      setDocuments(updatedDocuments);
+    };
 
     const categoryColor =
       categoryColors[document.document_category_id - 1] || "007EBD";
@@ -152,13 +155,12 @@ export default function DocumentsPage() {
           <Star
             documentId={document.document_id}
             isStarred={document.document_favourited}
-            updateStar={updateStar()}
+            updateStar={updateStar}
           />
         </td>
       </tr>
     );
   });
-
   return (
     <div>
       <div className="container mx-auto p-4 mb-16 mt-8">
