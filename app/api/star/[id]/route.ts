@@ -9,7 +9,7 @@ export async function GET(
 
   const result = await dbQuery({
     sql: "SELECT * FROM favourites WHERE user_id = ?",
-    values: [user_id]
+    values: [user_id],
   });
 
   return NextResponse.json(result, { status: 200 });
@@ -24,7 +24,7 @@ export async function POST(
   try {
     const result = await dbQuery({
       sql: "INSERT INTO favourites (user_id, document_id) VALUES (?, ?)",
-      values: [user_id, document_id]
+      values: [user_id, document_id],
     });
     return NextResponse.json(result, { status: 200 });
   } catch (error) {
@@ -41,7 +41,7 @@ export async function DELETE(
 
   const result = await dbQuery({
     sql: "DELETE FROM favourites WHERE user_id = ? AND document_id = ?",
-    values: [user_id, document_id]
+    values: [user_id, document_id],
   });
   return NextResponse.json(result, { status: 200 });
 }

@@ -9,7 +9,6 @@ import { useSession } from "next-auth/react";
 import Star from "@/components/Star";
 import { getUser } from "@/utils/utils";
 
-
 /*
 steg 1, hämta alla dok som redan finns i DB
 
@@ -49,42 +48,41 @@ export default function DocumentsPage() {
     router.push("/view-document/?id=" + document.document_id);
   };
 
-  useEffect(
-    () => {
-      const createNewUser = async () => {
-        const result = await fetch("api/users", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email: session?.user?.email,
-            userName: session?.user?.name,
-          }),
-        });
-        if (result.ok) {
-          const newUser = await result.json();
+  useEffect(() => {
+    const createNewUser = async () => {
+      const result = await fetch("api/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: session?.user?.email,
+          userName: session?.user?.name,
+        }),
+      });
+      if (result.ok) {
+        const newUser = await result.json();
 
-          localStorage.setItem(
-            "user",
-            JSON.stringify({
-              user_id: newUser[0].user_id,
-              user_email: newUser[0].user_email,
-              user_name: newUser[0].user_name,
-            })
-          );
-          setUser(newUser);
-        }
-      };
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            user_id: newUser[0].user_id,
+            user_email: newUser[0].user_email,
+            user_name: newUser[0].user_name,
+          })
+        );
+        setUser(newUser);
+      }
+    };
 
-      const getDocumentsData = async () => {
-        const user = getUser();
-        const result = await fetch("/api/users/" + user.user_id + "/documents");
-        const documentsFromAPI = await result.json();
-        setDocuments(documentsFromAPI.reverse());
-      };
-      createNewUser().then(() => getDocumentsData());
-    }, [session?.user]);
+    const getDocumentsData = async () => {
+      const user = getUser();
+      const result = await fetch("/api/users/" + user.user_id + "/documents");
+      const documentsFromAPI = await result.json();
+      setDocuments(documentsFromAPI.reverse());
+    };
+    createNewUser().then(() => getDocumentsData());
+  }, [session?.user]);
 
   // sortera efter favourite
   const sortDocuments = (documents: Document[]) => {
@@ -104,25 +102,24 @@ export default function DocumentsPage() {
     if (selectedCategory === "all") {
       filtered = documents;
     } else if (selectedCategory === "uncategorized") {
-      filtered = documents.filter(document => document.document_category_id === null);
+      filtered = documents.filter(
+        document => document.document_category_id === null
+      );
     } else {
       filtered = documents.filter(
         (document: { document_category_id: number }) =>
           document.document_category_id === parseInt(selectedCategory)
       );
     }
-    const sortedDocuments = sortDocuments(filtered)
+    const sortedDocuments = sortDocuments(filtered);
     setFilteredDocuments(sortedDocuments);
-
-
-  }, [documents, selectedCategory, filteredDocuments]);
+  }, [documents, selectedCategory]);
 
   const documentsData = filteredDocuments.map((document: Document) => {
     const truncatedContent =
       document.document_content.length > 25
         ? `${document.document_content.substring(0, 35)}...`
         : document.document_content;
-
 
     const formattedDate = format(
       new Date(document.document_created),

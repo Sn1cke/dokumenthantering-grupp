@@ -1,61 +1,63 @@
-import { getUser } from '@/utils/utils';
-import Image from 'next/image'
-import { useEffect, useState } from 'react';
-import { isatty } from 'tty';
+import { getUser } from "@/utils/utils";
+import Image from "next/image";
+import { useState } from "react";
 
 interface StarProps {
   documentId: number;
   isStarred: boolean;
 }
 
-
-
 const Star = ({ isStarred, documentId }: StarProps) => {
-  const [starActive, setStarActive] = useState(isStarred)
+  const [starActive, setStarActive] = useState(isStarred);
   const user = getUser();
   const handleClick = () => {
-    console.log(isStarred)
+    console.log(isStarred);
     if (!isStarred) {
       fetch(`/api/star/${documentId}`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ user_id: user.user_id, document_id: documentId }),
+        body: JSON.stringify({
+          user_id: user.user_id,
+          document_id: documentId,
+        }),
       });
-      setStarActive(!starActive)
+      setStarActive(!starActive);
     } else {
       fetch(`/api/star/${documentId}`, {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ user_id: user.user_id, document_id: documentId }),
+        body: JSON.stringify({
+          user_id: user.user_id,
+          document_id: documentId,
+        }),
       });
-      setStarActive(!starActive)
+      setStarActive(!starActive);
     }
   };
 
-
   return (
     <button onClick={handleClick}>
-      {starActive ?
+      {starActive ? (
         <Image
-          src={'/star_filled.svg'}
+          src={"/star_filled.svg"}
           width={24}
           height={24}
-          alt={''}
-          className='mx-auto'
+          alt={""}
+          className="mx-auto"
         />
-        :
+      ) : (
         <Image
-          src='/star.svg'
+          src="/star.svg"
           width={24}
           height={24}
-          alt={''}
-          className='mx-auto'
+          alt={""}
+          className="mx-auto"
         />
-      }
+      )}
     </button>
   );
 };

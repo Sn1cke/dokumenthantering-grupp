@@ -97,7 +97,7 @@ export default function CreateDocument() {
       body: JSON.stringify({
         title: docTitle,
         content: quillContent.quillText,
-        author: user.id,
+        author: user.user_id,
         dateCreated: getFormattedDate(),
         textStyling: quillContent.quillInnerHTML,
         isPrivate: isDocPrivate,
